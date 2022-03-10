@@ -2,7 +2,7 @@ import java.io.*;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
-public class player extends object{
+public class player extends object implements Runnable{
     //attributs
     private String name;
     private int nbGold, lives;
@@ -73,6 +73,17 @@ public class player extends object{
         while(!this.onLadder && !this.onFloor && !this.onZipline){
             setY(getY()+1);
             try{TimeUnit.MILLISECONDS.sleep(10);}catch(InterruptedException e){System.out.println(e);}
+        }
+    }
+
+    //run
+    @Override
+    public void run(){
+        while(!lodeRunner.endGame){
+            try{
+                wait();
+                System.out.println("OK");
+            }catch(InterruptedException e){System.out.println(e);}
         }
     }
 }
