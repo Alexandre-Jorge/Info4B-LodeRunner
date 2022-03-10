@@ -2,10 +2,10 @@ import java.io.*;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
-public class player extends Thread{
+public class player extends object{
     //attributs
     private String name;
-    private int posX, posY, nbGold, lives;
+    private int nbGold, lives;
     private boolean onLadder, onFloor, onZipline, inHole;
     //constructeurs
     //
@@ -20,30 +20,25 @@ public class player extends Thread{
     }
     //par defaut
     public player(){
+        super("O");
         init();
-        this.posX = 0;
-        this.posY = 0;
-        
     }
     //standard 1
     public player(String name){
+        super("O");
         init();
         this.name = name;
-        this.posX = 0;
-        this.posY = 0;
     }
     //standard 2
     public player(String name, int posX, int posY){
+        super("O",posX,posY);
         init();
         this.name = name;
-        this.posX = posX;
-        this.posY = posY;
     }
     //par clonage
     public player(player p){
+        super("O",p.getX(),p.getY());
         this.name      = p.getName();
-        this.posX      = p.getX();
-        this.posY      = p.getY();
         this.nbGold    = p.getGold();
         this.lives     = p.getLives();
         this.onLadder  = p.isOnLadder();
@@ -55,8 +50,6 @@ public class player extends Thread{
     //
     //getteurs
     public String   getName()       {return this.name;}
-    public int      getX()          {return this.posX;}
-    public int      getY()          {return this.posY;}
     public int      getGold()       {return this.nbGold;}
     public int      getLives()      {return this.lives;}
     public boolean  isOnLadder()    {return this.onLadder;}
@@ -65,8 +58,6 @@ public class player extends Thread{
     public boolean  isInHole()      {return this.inHole;}
     //setteurs
     public void setName(String s)       {this.name = s;}
-    public void setX(int i)             {this.posX = Math.abs(i);}
-    public void setY(int i)             {this.posY = Math.abs(i);}
     public void setGold(int i)          {this.nbGold = Math.abs(i);}
     public void setLives(int i)         {this.lives = Math.abs(i);}
     public void setOnLadder(boolean b)  {this.onLadder = b;}
@@ -74,18 +65,14 @@ public class player extends Thread{
     public void setOnZipLine(boolean b){this.onZipline = b;}
     public void setInHole(boolean b)    {this.inHole = b;}
     //deplacements
-    public void goUp()      {if(this.isOnLadder)this.posY--;}
-    public void goDown()    {if(this.isOnLadder)this.posY++;}
-    public void goLeft()    {if(this.onLadder || this.onFloor || this.onZipline)this.posX--;}
-    public void goRight()   {if(this.onLadder || this.onFloor || this.onZipline)this.posX++;}
+    public void goUp()      {if(this.onLadder)setY(getY()-1);}
+    public void goDown()    {if(this.onLadder)setY(getY()+1);}
+    public void goLeft()    {if(this.onLadder || this.onFloor || this.onZipline)setX(getX()-1);}
+    public void goRight()   {if(this.onLadder || this.onFloor || this.onZipline)setX(getX()+1);}
     public void fall(){
         while(!this.onLadder && !this.onFloor && !this.onZipline){
-            this.posY++;
-            TimeUnit.MILLISECONDS.sleep(10);
+            setY(getY()+1);
+            try{TimeUnit.MILLISECONDS.sleep(10);}catch(InterruptedException e){System.out.println(e);}
         }
-    }
-    //toString
-    public String toString(){
-        return "o";
     }
 }

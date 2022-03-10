@@ -4,7 +4,7 @@ import java.util.concurrent.TimeUnit;
 
 class playGround{
     //attributs
-    private char display[][];
+    private object display[][];
     private int sizeX;
     private int sizeY;
     //constructeurs
@@ -14,13 +14,14 @@ class playGround{
         int j=0;
         this.sizeX = sizeX;
         this.sizeY = sizeY;
-        this.display = new char[sizeX][sizeY];
+        this.display = new object[sizeX][sizeY];
         try{
             BufferedReader buf = new BufferedReader(f) ;
             String line;
             while((line = buf.readLine()) != null){
                 for(int i=0;i<sizeX;i++){
-                    display[i][j] = line.charAt(i);
+                    if(line.charAt(i)=='O')display[i][j] = new player();
+                    else display[i][j] = new object(""+line.charAt(i));
                 }
                 j++;
             }
