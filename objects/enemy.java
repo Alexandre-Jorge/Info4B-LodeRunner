@@ -1,3 +1,5 @@
+package objects;
+
 public class enemy extends character{
     //attributs
     private Boolean bot;
@@ -5,17 +7,17 @@ public class enemy extends character{
     //
     //par defaut
     public enemy(){
-        super("X");
+        super('X');
         this.bot = false;
     }
     //standard 1
     public enemy(int x, int y){
-        super("X", x, y);
+        super('X', x, y);
         this.bot = false;
     }
     //standard 2
     public enemy(int x, int y, boolean b){
-        super("X", x, y);
+        super('X', x, y);
         this.bot = b;
     }
     //methodes

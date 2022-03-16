@@ -1,5 +1,6 @@
 import java.io.*;
 import java.awt.*;
+import objects.*;
 
 class playGround{
     //attributs
@@ -44,7 +45,7 @@ class playGround{
                             this.player1 = new player("player1",i,j);
                             this.RunPlayer1 = this.player1;
                             this.ThPlayer1 = new Thread(this.RunPlayer1);
-                            displayTab[i][j] = new object(" ");
+                            displayTab[i][j] = new object(' ');
                             break;
                         }
                         case '$':{
@@ -55,14 +56,22 @@ class playGround{
                             this.enemy1 = new enemy(i,j,false);
                             this.RunEnemy1 = this.player1;
                             this.ThEnemy1 = new Thread(this.RunEnemy1);
-                            displayTab[i][j] = new object(" ");
+                            displayTab[i][j] = new object(' ');
                             break;
                         }
-                        /*case 'H':{
+                        case 'H':{
+                            displayTab[i][j] = new ladder(i,j);
                             break;
                         }
-                        */
-                        default : {displayTab[i][j] = new object(""+line.charAt(i));}
+                        case '#':{
+                            displayTab[i][j] = new floor(i,j);
+                            break;
+                        }
+                        case '_':{
+                            displayTab[i][j] = new zipline(i,j);
+                            break;
+                        }    
+                        default : {displayTab[i][j] = new object(line.charAt(i));}
                     }
                 }
                 j++;
@@ -75,16 +84,27 @@ class playGround{
     //methodes
     //
     //getteurs
-    public player getPlayer1(){return this.player1;}
-    public enemy getEnemy1(){return this.enemy1;}
+    public object[][]   getDisplayTab(){return this.displayTab;}
+    public int          getSizeX(){return this.sizeX;}
+    public int          getSizeY(){return this.sizeY;}
+    public player       getPlayer1(){return this.player1;}
+    public enemy        getEnemy1(){return this.enemy1;}
+    public Runnable     getRunPlayer1(){return this.RunPlayer1;} 
+    public Runnable     getRunEnemy1(){return this.RunEnemy1;}
+    public Thread       getThPlayer1(){return this.ThPlayer1;}
+    public Thread       getThEnemy1(){return this.ThEnemy1;}
+    public Frame        getFrame(){return this.frame;}
+    public TextArea     getTxt(){return this.txt;}
+    public TextArea     getInfo(){return this.info;}
+
     //others
     public void resetPos(){
         this.player1.goInit();
         this.enemy1.goInit();
     }
     public void updatePlayer1(){
-        char pos0 = this.displayTab[this.player1.getX()][this.player1.getY()+1].getChar();
-        char pos1 = this.displayTab[this.player1.getX()][this.player1.getY()].getChar();
+        char pos0 = this.displayTab[this.player1.getX()][this.player1.getY()+1].getType();
+        char pos1 = this.displayTab[this.player1.getX()][this.player1.getY()].getType();
         //deplacement
         if(pos0 =='#'|| pos0=='X') this.player1.setOnFloor(true);
         else this.player1.setOnFloor(false);

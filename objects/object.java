@@ -1,12 +1,16 @@
-public class object{
+package objects;
+
+import java.io.Serializable;
+
+public class object implements Serializable{
     //attributs
-    private String type;
+    private char type;
     private int posX, posY, initPosX, initPosY;
     private boolean hidden;
     //constructeur
     //
     //standard1
-    public object(String type, int x, int y, boolean b){
+    public object(char type, int x, int y, boolean b){
         this.type = type;
         this.posX = x;
         this.posY = y;
@@ -15,7 +19,7 @@ public class object{
         this.hidden = false;
     }
     //standard2
-    public object(String type, int x, int y){
+    public object(char type, int x, int y){
         this.type = type;
         this.posX = x;
         this.posY = y;
@@ -24,7 +28,7 @@ public class object{
         this.hidden = false;
     }
     //standard3
-    public object(String type){
+    public object(char type){
         this.type = type;
         this.posX = 0;
         this.posY = 0;
@@ -40,16 +44,15 @@ public class object{
     public int     getInitX() {return this.initPosX;}
     public int     getInitY() {return this.initPosY;}
     public boolean isHidden() {return this.hidden;}
-    public String  getType()  {return this.type;}
-    public char    getChar()  {return this.type.charAt(0);}
+    public char  getType()  {return this.type;}
     //setteurs
     public void setX(int i)          {this.posX = Math.abs(i);}
     public void setY(int i)          {this.posY = Math.abs(i);}
     public void setHidden(boolean b) {this.hidden = b;}
-    public void setType(String s)    {this.type = s;}
+    public void setType(char c)    {this.type = c;}
     //toString
     public String toString(){
-        if(!this.hidden) return this.type;
+        if(!this.hidden) return ""+this.type;
         else return " ";
     }
 }

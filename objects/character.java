@@ -1,7 +1,8 @@
-import java.io.*;
+package objects;
+
 import java.awt.event.*;
 
-public class character extends object implements Runnable, Serializable{
+public class character extends object implements Runnable{
     //attributs
     private boolean onLadder, onFloor, onZipline, inHole;
     protected MykeyListener keylistener;
@@ -16,12 +17,12 @@ public class character extends object implements Runnable, Serializable{
         this.keylistener  = new MykeyListener();
     }
     //standard 1
-    public character(String type){
+    public character(char type){
         super(type);
         init();
     }
     //standard 2
-    public character(String type, int x, int y){
+    public character(char type, int x, int y){
         super(type, x, y);
         init();
     }
