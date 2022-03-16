@@ -1,23 +1,14 @@
-import java.io.*;
-import java.util.*;
-import java.util.concurrent.TimeUnit;
-
-public class player extends object implements Runnable{
+public class player extends character{
     //attributs
     private String name;
     private int nbGold, lives;
-    private boolean onLadder, onFloor, onZipline, inHole;
-    private playGround myPg;
+    
     //constructeurs
     //
     //fonction init
-    public void init(){
+    private void init(){
         this.nbGold    = 0;
-        this.lives     = 3;
-        this.onLadder  = false;
-        this.onFloor   = false;
-        this.onZipline = false;
-        this.inHole    = false;
+        this.lives     = 5;
     }
     //par defaut
     public player(){
@@ -36,50 +27,26 @@ public class player extends object implements Runnable{
         init();
         this.name = name;
     }
-    //par clonage
-    public player(player p){
-        super("O",p.getX(),p.getY());
-        this.name      = p.getName();
-        this.nbGold    = p.getGold();
-        this.lives     = p.getLives();
-        this.onLadder  = p.isOnLadder();
-        this.onFloor   = p.isOnFloor();
-        this.onZipline = p.isOnZipline();
-        this.inHole    = p.isInHole();
-    }
     //methodes
     //
     //getteurs
-    public String   getName()       {return this.name;}
-    public int      getGold()       {return this.nbGold;}
-    public int      getLives()      {return this.lives;}
-    public boolean  isOnLadder()    {return this.onLadder;}
-    public boolean  isOnFloor()     {return this.onFloor;}
-    public boolean  isOnZipline()   {return this.onZipline;}
-    public boolean  isInHole()      {return this.inHole;}
+    public String           getName()       {return this.name;}
+    public int              getGold()       {return this.nbGold;}
+    public int              getLives()      {return this.lives;}
+    
     //setteurs
-    public void setName(String s)         {this.name = s;}
-    public void setGold(int i)            {this.nbGold = Math.abs(i);}
-    public void setLives(int i)           {this.lives = Math.abs(i);}
-    public void setOnLadder(boolean b)    {this.onLadder = b;}
-    public void setOnFloor(boolean b)     {this.onFloor = b;}
-    public void setOnZipLine(boolean b)   {this.onZipline = b;}
-    public void setInHole(boolean b)      {this.inHole = b;}
-    //deplacements
-    public void goUp()      {if(this.onLadder)setY(getY()-1);}
-    public void goDown()    {if((this.onLadder && !this.onFloor) || this.onZipline)setY(getY()+1);}
-    public void goLeft()    {if(this.onLadder || this.onFloor || this.onZipline)setX(getX()+1);}
-    public void goRight()   {if(this.onLadder || this.onFloor || this.onZipline)setX(getX()-1);}
-    public void fall()      {if(!this.onLadder && !this.onFloor && !this.onZipline) setY(getY()+1);}
-
+    public void setName(String s)               {this.name = s;}
+    public void setGold(int i)                  {this.nbGold = Math.abs(i);}
+    public void setLives(int i)                 {this.lives = Math.abs(i);}
     //run
     @Override
     public void run(){
         while(!lodeRunner.endGame){
-            try{
-                wait();
-                System.out.println("OK");
-            }catch(InterruptedException e){System.out.println(e);}
+            if(getLives()<1){
+                System.out.println("plus de vie !");
+                lodeRunner.endGame = true;
+            }
         }
     }
+    
 }
