@@ -5,13 +5,13 @@ import java.awt.event.*;
 
 class playGround{
     //attributs
-    private object displayTab[][];
-    private int sizeX;
-    private int sizeY;
-    private player player1;
-    private Frame frame = new Frame("Lode Runner");
-    private TextArea txt;
-    private MykeyListener keylistener = new MykeyListener(); 
+    protected object displayTab[][];
+    protected int sizeX;
+    protected int sizeY;
+    protected player player1;
+    protected Frame frame = new Frame("Lode Runner");
+    protected TextArea txt;
+    protected MykeyListener keylistener = new MykeyListener(); 
     //constructeurs
     //
     public void init(){
@@ -36,11 +36,23 @@ class playGround{
             String line;
             while((line = buf.readLine()) != null){
                 for(int i=0;i<sizeX;i++){
-                    if(line.charAt(i)=='O'){
-                        this.player1 = new player("player1");
-                        displayTab[i][j] = this.player1;
+                    switch(line.charAt(i)){
+                        case 'O':{
+                            this.player1 = new player("player1",i,j);
+                            displayTab[i][j] = new object(" ");
+                            break;
+                        }
+                        /*case 'X':{
+                            break;
+                        }
+                        case 'H':{
+                            break;
+                        }
+                        case '$':{
+                            break;
+                        }*/
+                        default : {displayTab[i][j] = new object(""+line.charAt(i));}
                     }
-                    else displayTab[i][j] = new object(""+line.charAt(i));
                 }
                 j++;
             }
@@ -50,39 +62,61 @@ class playGround{
     //
     //getteurs
     public player getPlayer1(){return this.player1;}
-    public void update(){
-        
+    public void updatePlayer1(){
+        char pos0 = this.displayTab[this.player1.getX()][this.player1.getY()+1].getChar();
+        char pos1 = this.displayTab[this.player1.getX()][this.player1.getY()].getChar();
+        if(pos0 =='#'|| pos0=='X') this.player1.setOnFloor(true);
+        else this.player1.setOnFloor(false);
+        if(pos1=='H' || pos0=='H') this.player1.setOnLadder(true);
+        else this.player1.setOnLadder(false);
+        if(pos1=='_') this.player1.setOnZipLine(true);
+        else this.player1.setOnZipLine(false);
+        player1.fall();
     }
     //toString
     public void display(){
+        updatePlayer1();
         String res = "";
         for(int j=0;j<this.sizeY;j++){
             for(int i=0;i<this.sizeX;i++){
-                res+=this.displayTab[i][j];
+                if(this.player1.getX()==i && this.player1.getY()==j){
+                    res+=this.player1;
+                }
+                else res+=this.displayTab[i][j];
             }
             res+='\n';
         }
         this.txt.setText(res);
+        System.out.println("player pos = ("+this.player1.getX()+" , "+this.player1.getY()+") , onLadder :"+this.player1.isOnLadder()+" , onFloor : "+this.player1.isOnFloor());
     }
-
-}
-
-class MykeyListener implements KeyListener{
-    @Override
-	public void keyTyped(KeyEvent e)
-	{
-		System.out.println("The key Typed was: " + e.getKeyChar());
-	}
-	@Override
-	public void keyPressed(KeyEvent e)
-	{
-		if(e.isActionKey())
-			System.exit(0);
-		System.out.println("The key Pressed was: " + e.getKeyChar());
-	}
-	@Override
-	public void keyReleased(KeyEvent e)
-	{
-		System.out.println("The key Released was: " + e.getKeyChar());
-	}
+    class MykeyListener implements KeyListener{
+        @Override
+        public void keyTyped(KeyEvent e)
+        {
+            switch(e.getKeyChar()){
+                case 27 : {System.exit(0);break;}
+                case 'z': {player1.goUp();break;}
+                case 'q': {player1.goRight();break;}
+                case 's': {player1.goDown();break;}
+                case 'd': {player1.goLeft();break;}
+            }
+        }
+        @Override
+        public void keyPressed(KeyEvent e)
+        {
+            /*switch(e.getKeyChar()){
+                case 27 : {System.exit(0);break;}
+                case 'z': {player1.goUp();break;}
+                case 'q': {player1.goRight();break;}
+                case 's': {player1.goDown();break;}
+                case 'd': {player1.goLeft();break;}
+            }*/
+            // System.out.println("The key Pressed was: " + e.getKeyChar());
+        }
+        @Override
+        public void keyReleased(KeyEvent e)
+        {
+            // System.out.println("The key Released was: " + e.getKeyChar());
+        }
+    }
 }

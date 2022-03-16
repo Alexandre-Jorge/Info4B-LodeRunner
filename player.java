@@ -7,6 +7,7 @@ public class player extends object implements Runnable{
     private String name;
     private int nbGold, lives;
     private boolean onLadder, onFloor, onZipline, inHole;
+    private playGround myPg;
     //constructeurs
     //
     //fonction init
@@ -54,27 +55,22 @@ public class player extends object implements Runnable{
     public int      getLives()      {return this.lives;}
     public boolean  isOnLadder()    {return this.onLadder;}
     public boolean  isOnFloor()     {return this.onFloor;}
-    public boolean  isOnZipline()  {return this.onZipline;}
+    public boolean  isOnZipline()   {return this.onZipline;}
     public boolean  isInHole()      {return this.inHole;}
     //setteurs
-    public void setName(String s)       {this.name = s;}
-    public void setGold(int i)          {this.nbGold = Math.abs(i);}
-    public void setLives(int i)         {this.lives = Math.abs(i);}
-    public void setOnLadder(boolean b)  {this.onLadder = b;}
-    public void setOnFloor(boolean b)   {this.onFloor = b;}
-    public void setOnZipLine(boolean b){this.onZipline = b;}
-    public void setInHole(boolean b)    {this.inHole = b;}
+    public void setName(String s)         {this.name = s;}
+    public void setGold(int i)            {this.nbGold = Math.abs(i);}
+    public void setLives(int i)           {this.lives = Math.abs(i);}
+    public void setOnLadder(boolean b)    {this.onLadder = b;}
+    public void setOnFloor(boolean b)     {this.onFloor = b;}
+    public void setOnZipLine(boolean b)   {this.onZipline = b;}
+    public void setInHole(boolean b)      {this.inHole = b;}
     //deplacements
     public void goUp()      {if(this.onLadder)setY(getY()-1);}
-    public void goDown()    {if(this.onLadder)setY(getY()+1);}
-    public void goLeft()    {if(this.onLadder || this.onFloor || this.onZipline)setX(getX()-1);}
-    public void goRight()   {if(this.onLadder || this.onFloor || this.onZipline)setX(getX()+1);}
-    public void fall(){
-        while(!this.onLadder && !this.onFloor && !this.onZipline){
-            setY(getY()+1);
-            try{TimeUnit.MILLISECONDS.sleep(10);}catch(InterruptedException e){System.out.println(e);}
-        }
-    }
+    public void goDown()    {if((this.onLadder && !this.onFloor) || this.onZipline)setY(getY()+1);}
+    public void goLeft()    {if(this.onLadder || this.onFloor || this.onZipline)setX(getX()+1);}
+    public void goRight()   {if(this.onLadder || this.onFloor || this.onZipline)setX(getX()-1);}
+    public void fall()      {if(!this.onLadder && !this.onFloor && !this.onZipline) setY(getY()+1);}
 
     //run
     @Override

@@ -8,7 +8,10 @@ public class lodeRunner{
         try{
             FileReader f = new FileReader("level2.txt");
             playGround pg = new playGround(f,100,40);
-            pg.display();
+            while(!endGame){
+                pg.display();
+                try{TimeUnit.MILLISECONDS.sleep(1000/50);}catch(InterruptedException e){System.out.println(e);}//50 fps
+            }
         }catch(Exception e){System.out.println(e);}
     }
 }
