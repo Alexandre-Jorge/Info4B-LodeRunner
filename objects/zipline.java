@@ -3,9 +3,12 @@ package objects;
 
 public class zipline extends object{
     public zipline(){
-        super('H');
+        super('_');
     }
     public zipline(int x, int y){
-        super('H', x, y);
+        super('_', x, y);
+    }
+    public zipline(int x, int y, boolean hide){
+        super('_', x, y, hide);
     }
 }

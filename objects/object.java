@@ -16,7 +16,7 @@ public class object implements Serializable{
         this.posY = y;
         this.initPosX = x;
         this.initPosY = y;
-        this.hidden = false;
+        this.hidden = b;
     }
     //standard2
     public object(char type, int x, int y){
@@ -44,12 +44,12 @@ public class object implements Serializable{
     public int     getInitX() {return this.initPosX;}
     public int     getInitY() {return this.initPosY;}
     public boolean isHidden() {return this.hidden;}
-    public char  getType()  {return this.type;}
+    public char    getType()  {if(!this.hidden) return this.type;else return ' ';}
     //setteurs
     public void setX(int i)          {this.posX = Math.abs(i);}
     public void setY(int i)          {this.posY = Math.abs(i);}
     public void setHidden(boolean b) {this.hidden = b;}
-    public void setType(char c)    {this.type = c;}
+    public void setType(char c)      {this.type = c;}
     //toString
     public String toString(){
         if(!this.hidden) return ""+this.type;

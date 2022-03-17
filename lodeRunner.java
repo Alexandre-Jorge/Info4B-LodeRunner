@@ -6,7 +6,7 @@ public class lodeRunner{
     public static boolean endGame = false;
     public static void main(String Args[]){
         try{
-            FileReader f = new FileReader("levels/level2.txt");
+            FileReader f = new FileReader("levels/level1.txt");
             playGround pg = new playGround(f,100,40);
             while(pg.getThPlayer1().isAlive()){
                 pg.display();

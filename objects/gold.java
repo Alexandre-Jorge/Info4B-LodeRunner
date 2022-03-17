@@ -7,4 +7,7 @@ public class gold extends object{
     public gold(int x, int y){
         super('$', x, y);
     }
+    public gold(int x, int y, boolean hide){
+        super('$', x, y, hide);
+    }
 }
