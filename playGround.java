@@ -128,21 +128,40 @@ class playGround{
         }
     }
     public void updateCharacter(character c){
-        char pos0 = this.displayTab[c.getX()][c.getY()+1].getType();
-        char pos1 = this.displayTab[c.getX()][c.getY()].getType();
+        char posC = this.displayTab[c.getX()][c.getY()].getType();
+        char UnderPosC;
         //deplacement
-        if(pos0 =='#'|| pos0=='X') c.setOnFloor(true);
-        else c.setOnFloor(false);
-        if(pos1=='H') c.setOnLadder(true);
+        if(c.getY()<39){
+            UnderPosC = this.displayTab[c.getX()][c.getY()+1].getType();
+            if(UnderPosC =='#'|| (c.getX()==enemy1.getX() && c.getY()==enemy1.getY()-1)) c.setOnFloor(true);
+            else c.setOnFloor(false);
+            if(posC==' ' && UnderPosC=='H') c.setOnTopOfLadder(true);
+            else c.setOnTopOfLadder(false);
+        }
+        if(posC=='H') c.setOnLadder(true);
         else c.setOnLadder(false);
-        if(pos1=='_') c.setOnZipLine(true);
+        if(posC=='_') c.setOnZipLine(true);
         else c.setOnZipLine(false);
-        if(pos1==' ' && pos0=='H') c.setOnTopOfLadder(true);
-        else c.setOnTopOfLadder(false);
+        
         c.fall();
     }
     public void updatePlayer(player p){
         updateCharacter(p);
+        if(p.getY()<39 && p.getX()>0){
+            if(this.displayTab[p.getX()-1][p.getY()+1].getType()=='#'){
+                p.setDiggableL(true);
+                updateHole((floor)displayTab[p.getX()-1][p.getY()+1]);
+            }
+            else p.setDiggableL(false);
+        }
+        if(p.getY()<39 && p.getX()<99){
+            if(this.displayTab[p.getX()+1][p.getY()+1].getType()=='#'){
+                p.setDiggableR(true);
+                updateHole((floor)displayTab[p.getX()+1][p.getY()+1]);
+            }
+            else p.setDiggableR(false);
+        }
+            
         if(this.displayTab[p.getX()][p.getY()].getType()=='$' && !this.displayTab[p.getX()][p.getY()].isHidden()){
             p.setGold(p.getGold()+1);
             this.displayTab[p.getX()][p.getY()].setHidden(true);
@@ -162,6 +181,16 @@ class playGround{
     }
     public void updateEnemy(enemy e){
         updateCharacter(e);
+    }
+    public void updateHole(floor f){
+        if((this.player1.getDigL() && (this.player1.getX()==f.getX()+1 && this.player1.getY()==f.getY()-1)) || (this.player1.getDigR() && (this.player1.getX()==f.getX()-1 && this.player1.getY()==f.getY()-1))){
+            f.setHidden(true);
+            //resealHole((floor)f);
+        }
+    }
+    public void resealHole(floor f){
+        try{Thread.sleep(3000);}catch(InterruptedException e){System.out.println(e);}
+        f.setHidden(false);
     }
     //toString
     public void display(){
