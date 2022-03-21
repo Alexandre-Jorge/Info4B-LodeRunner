@@ -1,5 +1,7 @@
 import java.io.*;
 import java.util.*;
+
+
 import java.awt.*;
 import objects.*;
 
@@ -128,11 +130,11 @@ class playGround{
         }
     }
     public void updateCharacter(character c){
-        char posC = this.displayTab[c.getX()][c.getY()].getType();
+        char posC = this.displayTab[c.getX()][c.getY()].getAvailableType();
         char UnderPosC;
         //deplacement
         if(c.getY()<39){
-            UnderPosC = this.displayTab[c.getX()][c.getY()+1].getType();
+            UnderPosC = this.displayTab[c.getX()][c.getY()+1].getAvailableType();
             if(UnderPosC =='#'|| (c.getX()==enemy1.getX() && c.getY()==enemy1.getY()-1)) c.setOnFloor(true);
             else c.setOnFloor(false);
             if(posC==' ' && UnderPosC=='H') c.setOnTopOfLadder(true);
@@ -148,28 +150,28 @@ class playGround{
     public void updatePlayer(player p){
         updateCharacter(p);
         if(p.getY()<39 && p.getX()>0){
-            if(this.displayTab[p.getX()-1][p.getY()+1].getType()=='#'){
+            if(this.displayTab[p.getX()-1][p.getY()+1].getAvailableType()=='#'){
                 p.setDiggableL(true);
                 updateHole((floor)displayTab[p.getX()-1][p.getY()+1]);
             }
             else p.setDiggableL(false);
         }
         if(p.getY()<39 && p.getX()<99){
-            if(this.displayTab[p.getX()+1][p.getY()+1].getType()=='#'){
+            if(this.displayTab[p.getX()+1][p.getY()+1].getAvailableType()=='#'){
                 p.setDiggableR(true);
                 updateHole((floor)displayTab[p.getX()+1][p.getY()+1]);
             }
             else p.setDiggableR(false);
         }
             
-        if(this.displayTab[p.getX()][p.getY()].getType()=='$' && !this.displayTab[p.getX()][p.getY()].isHidden()){
+        if(this.displayTab[p.getX()][p.getY()].getAvailableType()=='$' && !this.displayTab[p.getX()][p.getY()].isHidden()){
             p.setGold(p.getGold()+1);
             this.displayTab[p.getX()][p.getY()].setHidden(true);
             if(p.getGold()==this.golds){
                 showExit(true);
             }
         }
-        else if(p.getX()==this.enemy1.getX() && p.getY()==this.enemy1.getY()){
+        else if((p.getX()==this.enemy1.getX() && p.getY()==this.enemy1.getY()) || this.displayTab[p.getX()][p.getY()].getAvailableType()=='#'){
             p.setLives(p.getLives()-1);
             resetPos();
         }
@@ -180,18 +182,30 @@ class playGround{
         }
     }
     public void updateEnemy(enemy e){
+        if(this.displayTab[e.getX()][e.getY()].getAvailableType()=='#'){
+            e.die();
+        }
+        else if(this.displayTab[e.getX()][e.getY()].getType()=='#'){
+            e.setInHole(true);
+            escapeFromHole(e);
+        }
         updateCharacter(e);
+    }
+    public void escapeFromHole(enemy e){
+        chronoToEscape cte = new chronoToEscape(e, 3000);
+        cte.start();
     }
     public void updateHole(floor f){
         if((this.player1.getDigL() && (this.player1.getX()==f.getX()+1 && this.player1.getY()==f.getY()-1)) || (this.player1.getDigR() && (this.player1.getX()==f.getX()-1 && this.player1.getY()==f.getY()-1))){
             f.setHidden(true);
-            //resealHole((floor)f);
+            resealHole(f);
         }
     }
     public void resealHole(floor f){
-        try{Thread.sleep(3000);}catch(InterruptedException e){System.out.println(e);}
-        f.setHidden(false);
+        chronoToShow cts = new chronoToShow(f,4000);
+        cts.start();
     }
+    
     //toString
     public void display(){
         updatePlayer(this.player1);
@@ -213,5 +227,69 @@ class playGround{
         this.info.setText("Lives = "+player1.getLives()+"\nGold = "+this.player1.getGold()+"/"+this.golds);
         // System.out.println("player pos = ("+this.player1.getX()+" , "+this.player1.getY()+") , onLadder :"+this.player1.isOnLadder()+" , topLadder : "+this.player1.isOnTopOfLadder());
     }
+    class chrono extends Thread{
+        protected object o;
+        protected int  time;
+        public chrono(object o){
+            this.o = o;
+            time = 4000;
+        }
+        public chrono(object o, int t){
+            this.o = o;
+            this.time = t;
+        }
+        public object getO(){return this.o;}
+        public int getTime(){return this.time;}
+
+        public void setO(object o){this.o = o;}
+        public void setTime(int i){this.time = i;}
+        @Override
+        public void run(){};
+        
+    }
+    class chronoToShow extends chrono{
+        public chronoToShow(object o){
+            super(o);
+        }
+        public chronoToShow(object o, int t){
+            super(o,t);
+        }
+
+        @Override
+        public void run(){
+            synchronized(o){
+                try{Thread.sleep(this.time);}catch(InterruptedException e){System.out.println(e + "class chronoToShow, methode run");}
+                this.o.setHidden(false);
+            }
+        }
+    }
+    class chronoToEscape extends chrono{
+        enemy e;
+        public chronoToEscape(enemy e){
+            super(e);
+            this.e = e;
+        }
+        public chronoToEscape(enemy e, int t){
+            super(e,t);
+            this.e = e;
+        }
+
+        @Override
+        public void run(){
+            synchronized(e){
+                try{Thread.sleep(this.time);}catch(InterruptedException e){System.out.println(e + "class chronoToEscape, methode run");}
+                this.e.setInHole(false);
+                if(e.getTarget().getX()<e.getX()){
+                    e.setY(e.getY()-1);
+                    e.setX(e.getX()-1);
+                }
+                else{
+                    e.setY(e.getY()-1);
+                    e.setX(e.getX()+1);
+                }
+            }
+        }
+    }
+    
     
 }

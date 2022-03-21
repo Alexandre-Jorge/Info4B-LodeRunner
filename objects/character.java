@@ -1,6 +1,7 @@
 package objects;
 
 import java.awt.event.*;
+import java.sql.Time;
 
 public class character extends object implements Runnable{
     //attributs
@@ -91,7 +92,7 @@ public class character extends object implements Runnable{
     public void fall(){if(!this.onLadder && !this.onFloor && !this.onZipline && !onTopOfLadder && !inHole && getY()<39) setY(getY()+1);}
 
     public boolean dig(char side){
-        if(this.getType()=='O'){
+        if(this.getAvailableType()=='O'){
             if(side=='R' && this.diggableR){
                 this.digR = true;
                 return true;
@@ -115,7 +116,7 @@ public class character extends object implements Runnable{
         @Override
         public void keyTyped(KeyEvent e)
         {
-            
+          
         }
         @Override
         public void keyPressed(KeyEvent e)
@@ -126,8 +127,19 @@ public class character extends object implements Runnable{
                 case 'q': {right = true;break;}
                 case 's': {down = true;break;}
                 case 'd': {left = true;break;}
-                case 'a': {dig('L');break;}
-                case 'e': {dig('R');break;}
+                case 'a': {
+                    dig('L');
+                    try{Thread.sleep(20);}catch(InterruptedException i){System.out.println(i + " class MyKeyListener methods keypressed");}
+                    keyReleased(e);
+                    break;
+                }
+                case 'e': {
+                    dig('R');
+                    try{Thread.sleep(10);}catch(InterruptedException i){System.out.println(i + " class MyKeyListener methods keypressed");}
+                    keyReleased(e);
+                    break;
+                }
+
             }
             // System.out.println("The key Pressed was: " + e.getKeyChar());
         }

@@ -41,6 +41,12 @@ public class enemy extends character{
     //setteurs
     public void setIsBot(boolean b) {this.bot = b;}
     public void setTarget(player p) {this.target = p;}
+    //others
+    public void die(){
+        this.setInHole(false);
+        this.setY(1);
+        this.setX((int)(Math.random()*98+1));
+    }
     //function AI
     public void AIscript(){
         boolean moved;
@@ -57,7 +63,7 @@ public class enemy extends character{
                     else if (getX()>this.target.getX()){moved = this.goRight();}
                 }
             }
-            if(isOnLadder() && !moved){
+            if((isOnLadder() || isOnTopOfLadder())&& !moved){
                 if (getY()<this.target.getY()) {moved = this.goDown();}
                 else if (getY()>this.target.getY()){moved = this.goUp();}
             }

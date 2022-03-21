@@ -39,12 +39,13 @@ public class object implements Serializable{
     //méthodes
     //
     //getteurs
-    public int     getX()     {return this.posX;}
-    public int     getY()     {return this.posY;}
-    public int     getInitX() {return this.initPosX;}
-    public int     getInitY() {return this.initPosY;}
-    public boolean isHidden() {return this.hidden;}
-    public char    getType()  {if(!this.hidden) return this.type;else return ' ';}
+    public int     getX()              {return this.posX;}
+    public int     getY()              {return this.posY;}
+    public int     getInitX()          {return this.initPosX;}
+    public int     getInitY()          {return this.initPosY;}
+    public boolean isHidden()          {return this.hidden;}
+    public char    getAvailableType()  {if(!this.hidden) return this.type;else return ' ';}
+    public char    getType()           {return this.type;}
     //setteurs
     public void setX(int i)          {this.posX = Math.abs(i);}
     public void setY(int i)          {this.posY = Math.abs(i);}
