@@ -60,8 +60,8 @@ public class enemy extends character{
                         else if (getY()>getTarget().getY()){moved = goUp();}
                     }
                     if((isOnFloor() || isOnTopOfLadder()) && !moved){
-                        if(getX()<getTarget().getX()) {moved = goLeft();}
-                        else if (getX()>getTarget().getX()){moved = goRight();}
+                        if(getX()<getTarget().getX()) {moved = goRight();}
+                        else if (getX()>getTarget().getX()){moved = goLeft();}
                     }
                 }
                 if((isOnLadder() || isOnTopOfLadder())&& !moved){
@@ -69,8 +69,8 @@ public class enemy extends character{
                     else if (getY()>getTarget().getY()){moved = goUp();}
                 }
                 if(isOnZipline() && !moved){
-                    if(getX()<getTarget().getX()) {moved = goLeft();}
-                    else if (getX()>getTarget().getX()){moved = goRight();}
+                    if(getX()<getTarget().getX()) {moved = goRight();}
+                    else if (getX()>getTarget().getX()){moved = goLeft();}
                     else if(getY()<getTarget().getY()){moved = goDown();}
                 }
             }

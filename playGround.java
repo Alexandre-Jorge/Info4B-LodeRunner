@@ -16,7 +16,7 @@ class playGround{
     private Thread ThPlayer1;
     private ArrayList<Thread> thEnemys;
     private Frame frame = new Frame("Lode Runner");
-    private TextArea txt, info;
+    private TextArea gamePlay, info;
     private ArrayList<int[]> exitPos;
     private ArrayList<int[]> goldsPos;
 
@@ -24,11 +24,11 @@ class playGround{
     //
     //init
     public void init(){
-        this.txt.setFocusable(false);
-        this.txt.setFont(new Font("Monospaced",Font.BOLD, 12));
+        this.gamePlay.setFocusable(false);
+        this.gamePlay.setFont(new Font("Monospaced",Font.BOLD, 12));
         this.info.setFocusable(false);
         this.frame.setLayout(new FlowLayout());
-        this.frame.add(this.txt);
+        this.frame.add(this.gamePlay);
         this.frame.add(this.info);
         this.frame.setVisible(true);
         this.frame.addKeyListener(this.player1.getKeyListener());
@@ -48,7 +48,7 @@ class playGround{
         this.enemys = new ArrayList<enemy>();
         this.runEnemys = new ArrayList<Runnable>();
         this.thEnemys = new ArrayList<Thread>();
-        this.txt = new TextArea(sizeY, sizeX);
+        this.gamePlay = new TextArea(sizeY, sizeX);
         this.info = new TextArea(2,20);
         this.frame.setSize(1000,800);
         try{
@@ -124,7 +124,7 @@ class playGround{
     public Thread               getThEnemy(int i) {return this.thEnemys.get(i);}
     public ArrayList<Thread>    getThEnemy()      {return this.thEnemys;}
     public Frame                getFrame()        {return this.frame;}
-    public TextArea             getTxt()          {return this.txt;}
+    public TextArea             getGamePlay()     {return this.gamePlay;}
     public TextArea             getInfo()         {return this.info;}
     public int[]                getGoldPos(int i) {return this.goldsPos.get(i);}
     public int[]                getExitPos(int i) {return this.exitPos.get(i);}
@@ -218,7 +218,7 @@ class playGround{
         if(getDisplayTab()[e.getX()][e.getY()].getAvailableType()=='#'){
             e.die();
         }
-        else if(getDisplayTab()[e.getX()][e.getY()].getType()=='#'){
+        else if(getDisplayTab()[e.getX()][e.getY()].getType()=='#' && !e.isInHole()){
             e.setInHole(true);
             escapeFromHole(e);
         }
@@ -234,19 +234,20 @@ class playGround{
         }
     }
     public void resealHole(floor f){
-        chronoToShow cts = new chronoToShow(f,4000);
+        chronoToShow cts = new chronoToShow(f,5000);
         cts.start();
     }
     
-    //toString
     public boolean enemyHere(int x, int y){
         for(int i=0;i<getEnemys().size();i++){
             if(getEnemy(i).getX()==x && getEnemy(i).getY()==y)return true;
         }
         return false;
     }
+    //toString
     public void display(){
         updatePlayer(getPlayer1());
+        if(getPlayer1().isEnded())return;
         for(int i=0;i<getEnemys().size();i++)
             updateEnemy(getEnemy(i));
         String res = "";
@@ -262,7 +263,7 @@ class playGround{
             }
             res+='\n';
         }
-        getTxt().setText(res);
+        getGamePlay().setText(res);
         getInfo().setText("Lives = "+getPlayer1().getLives()+"\nGold = "+getPlayer1().getGold()+"/"+getGolds());
         // System.out.println("player pos = ("+this.player1.getX()+" , "+this.player1.getY()+") , onLadder :"+this.player1.isOnLadder()+" , topLadder : "+this.player1.isOnTopOfLadder());
     }
@@ -314,6 +315,7 @@ class playGround{
         @Override
         public void run(){
             try{Thread.sleep(getTime());}catch(InterruptedException e){System.out.println(e + "class chronoToEscape, methode run");}
+            this.e.setInHole(false);
             if(e.getTarget().getX()<e.getX()){
                 e.setY(e.getY()-1);
                 e.setX(e.getX()-1);
@@ -322,7 +324,6 @@ class playGround{
                 e.setY(e.getY()-1);
                 e.setX(e.getX()+1);
             }
-            this.e.setInHole(false);
         }
     }
     

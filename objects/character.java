@@ -61,7 +61,7 @@ public class character extends object implements Runnable{
     public synchronized void setLeft(boolean b)              {this.left = b;}
     public synchronized void setRight(boolean b)             {this.right = b;}
     //deplacements
-    public void goInit()    {setX(getInitX());setY(getInitY());}
+    public void goInit() {setX(getInitX());setY(getInitY());}
     public boolean goUp(){
         boolean res;
         if(isOnLadder() && getY()>0){
@@ -84,19 +84,19 @@ public class character extends object implements Runnable{
     }
     public boolean goLeft(){
         if((isOnLadder() || isOnFloor() || isOnZipline() || isOnTopOfLadder()) && getX()>0){
-            setX(getX()+1);
+            setX(getX()-1);
             return true;
         }
         else return false;
     }
     public boolean goRight(){
         if((isOnLadder() || isOnFloor() || isOnZipline() || isOnTopOfLadder()) && getX()<99){
-            setX(getX()-1);
+            setX(getX()+1);
             return true;
         }
         else return false;
     }
-    public void fall(){if(!isOnLadder() && !isOnFloor() && !isOnZipline() && !isOnTopOfLadder() && !isInHole() && getY()<39) setY(getY()+1);}
+    public void fall(){if(!isOnLadder() && !isOnFloor() && !isOnZipline() && !isOnTopOfLadder() && !isInHole() && getY()<39){setY(getY()+1);} }
 
     public boolean dig(char side){
         if(this.getAvailableType()=='O'){
@@ -142,9 +142,9 @@ public class character extends object implements Runnable{
                     break;
                 }
                 case 'z': {setUp(true);break;}
-                case 'q': {setRight(true);break;}
+                case 'q': {setLeft(true);break;}
                 case 's': {setDown(true);break;}
-                case 'd': {setLeft(true);break;}
+                case 'd': {setRight(true);break;}
                 case 27 : {System.exit(0);break;}
                 
 
@@ -156,9 +156,9 @@ public class character extends object implements Runnable{
         {
             switch(e.getKeyChar()){
                 case 'z': {setUp(false);break;}
-                case 'q': {setRight(false);break;}
+                case 'q': {setLeft(false);break;}
                 case 's': {setDown(false);break;}
-                case 'd': {setLeft(false);break;}
+                case 'd': {setRight(false);break;}
                 case 'a': {setDigL(false);break;}
                 case 'e': {setDigR(false);break;}
             }
