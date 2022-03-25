@@ -14,19 +14,19 @@ public class player extends character{
         this.lives     = 5;
     }
     //par defaut
-    public player(){
-        super('O');
+    public player(playGround pg){
+        super('O', pg);
         init();
     }
     //standard 1
-    public player(String name){
-        super('O');
+    public player(String name, playGround pg){
+        super('O', pg);
         init();
         this.name = name;
     }
     //standard 2
-    public player(String name, int posX, int posY){
-        super('O',posX,posY);
+    public player(String name, int posX, int posY, playGround pg){
+        super('O',posX,posY, pg);
         init();
         this.name = name;
     }
@@ -43,21 +43,74 @@ public class player extends character{
     public              void setGold(int i)    {this.nbGold = Math.abs(i);}
     public synchronized void setLives(int i)   {this.lives = Math.abs(i);}
     public              void setEnd(boolean b) {this.end = b;}
+    //others
+    public boolean isCaught(){
+        for(int i=0;i<getPlayGround().getEnemys().size();i++){
+            if(getX()==getPlayGround().getEnemy(i).getX() && getY()==getPlayGround().getEnemy(i).getY())return true;
+        }
+        return false;
+    }
+    public void updatePlayer(){
+        updateCharacter();
+        int X = getX();
+        int Y = getY();
+        if(Y<39 && X>0){
+            if(getPlayGround().getDisplayTab()[X-1][Y+1].getAvailableType()=='#'){
+                setDiggableL(true);
+                getPlayGround().updateHole((floor)getPlayGround().getDisplayTab()[X-1][Y+1]);
+            }
+            else setDiggableL(false);
+        }
+        if(Y<39 && X<99){
+            if(getPlayGround().getDisplayTab()[X+1][Y+1].getAvailableType()=='#'){
+                setDiggableR(true);
+                getPlayGround().updateHole((floor)getPlayGround().getDisplayTab()[X+1][Y+1]);
+            }
+            else setDiggableR(false);
+        }
+            
+        if(getPlayGround().getDisplayTab()[X][Y].getAvailableType()=='$' && !getPlayGround().getDisplayTab()[X][Y].isHidden()){
+            setGold(getGold()+1);
+            getPlayGround().getDisplayTab()[X][Y].setHidden(true);
+            if(getGold()==getPlayGround().getGolds()){
+                getPlayGround().showExit(true);
+            }
+        }
+        else if( isCaught() || getPlayGround().getDisplayTab()[X][Y].getAvailableType()=='#'){
+            setLives(getLives()-1);
+            getPlayGround().resetPos();
+        }
+        if(Y==1){
+            setEnd(true);
+            getPlayGround().getInfo().setText("YOU WIN !");
+            System.out.println(getName()+" won");
+        }
+    }
     //run
     @Override
     public void run(){
+        Control ctrl = new Control();
+        ctrl.start();
         while(!isEnded()){
-            // System.out.println("ok");
-            if(getLeft())goLeft();
-            else if(getRight())goRight();
-            else if(getUp())goUp();
-            else if(getDown())goDown();
-            if(getLives()<1){
-                System.out.println("plus de vie !");
-                this.setEnd(true);
-
+            updatePlayer();
+        }
+    }
+    class Control extends Thread{
+        @Override
+        public void run(){
+            while(!isEnded()){
+                // System.out.println("ok");
+                if(getLeft())goLeft();
+                else if(getRight())goRight();
+                else if(getUp())goUp();
+                else if(getDown())goDown();
+                if(getLives()<1){
+                    System.out.println("plus de vie !");
+                    setEnd(true);
+    
+                }
+                try{Thread.sleep(70);}catch(InterruptedException e){System.out.println(e);}
             }
-            try{Thread.sleep(70);}catch(InterruptedException e){System.out.println(e);}
         }
     }
     

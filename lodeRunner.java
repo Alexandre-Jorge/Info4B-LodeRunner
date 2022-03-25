@@ -1,4 +1,5 @@
 import java.io.*;
+import objects.*;
 
 public class lodeRunner{
     public static boolean endGame = false;

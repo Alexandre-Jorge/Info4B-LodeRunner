@@ -7,6 +7,7 @@ public class character extends object implements Runnable{
     private boolean onLadder, onFloor, onZipline, inHole, onTopOfLadder, diggableR, diggableL;
     protected MykeyListener keylistener;
     protected boolean left, right, up, down, digL, digR;
+    private playGround pg;
     //constructeurs
     //
     //fonction init
@@ -19,13 +20,15 @@ public class character extends object implements Runnable{
         this.keylistener   = new MykeyListener();
     }
     //standard 1
-    public character(char type){
+    public character(char type, playGround pg){
         super(type);
+        this.pg = pg;
         init();
     }
     //standard 2
-    public character(char type, int x, int y){
+    public character(char type, int x, int y, playGround pg){
         super(type, x, y);
+        this.pg = pg;
         init();
     }
     //methodes
@@ -45,6 +48,7 @@ public class character extends object implements Runnable{
     public synchronized boolean          getDigL()        {return this.digL;}
     public synchronized boolean          isDiggableL()    {return this.diggableL;}
     public synchronized boolean          isDiggableR()    {return this.diggableR;}
+    public synchronized playGround       getPlayGround()  {return this.pg;}
     //setteurs
     public synchronized void setOnLadder(boolean b)          {this.onLadder = b;}
     public synchronized void setOnFloor(boolean b)           {this.onFloor = b;}
@@ -96,7 +100,12 @@ public class character extends object implements Runnable{
         }
         else return false;
     }
-    public void fall(){if(!isOnLadder() && !isOnFloor() && !isOnZipline() && !isOnTopOfLadder() && !isInHole() && getY()<39){setY(getY()+1);} }
+    public void fall(){
+        if(!isOnLadder() && !isOnFloor() && !isOnZipline() && !isOnTopOfLadder() && !isInHole() && getY()<39){
+            setY(getY()+1);
+            try{Thread.sleep(70);}catch(InterruptedException e){System.out.println(e + "class character method fall");}
+        } 
+    }
 
     public boolean dig(char side){
         if(this.getAvailableType()=='O'){
@@ -111,6 +120,30 @@ public class character extends object implements Runnable{
             else return false;
         }
         else return false;
+    }
+    public boolean isOnEnemy(){
+        for(int i=0;i<getPlayGround().getEnemys().size();i++){
+            if(getX()==getPlayGround().getEnemy(i).getX() && getY()==getPlayGround().getEnemy(i).getY()-1) return true;
+        }
+        return false;
+    }
+    public void updateCharacter(){
+        char posC = getPlayGround().getDisplayTab()[getX()][getY()].getAvailableType();
+        char UnderPosC;
+        //deplacement
+        if(getY()<39){
+            UnderPosC = getPlayGround().getDisplayTab()[getX()][getY()+1].getAvailableType();
+            if(UnderPosC =='#'|| isOnEnemy()) setOnFloor(true);
+            else setOnFloor(false);
+            if(posC==' ' && UnderPosC=='H') setOnTopOfLadder(true);
+            else setOnTopOfLadder(false);
+        }
+        if(posC=='H') setOnLadder(true);
+        else setOnLadder(false);
+        if(posC=='_') setOnZipLine(true);
+        else setOnZipLine(false);
+        
+        fall();
     }
 
     //run
