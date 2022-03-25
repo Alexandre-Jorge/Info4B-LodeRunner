@@ -10,13 +10,16 @@ class playGround{
     private object displayTab[][];
     private int sizeX, sizeY, golds=0;
     private player player1;
-    private enemy enemy1;
-    private Runnable RunPlayer1, RunEnemy1;
-    private Thread ThPlayer1, ThEnemy1;
+    private ArrayList<enemy> enemys;
+    private Runnable RunPlayer1;
+    private ArrayList<Runnable> runEnemys;
+    private Thread ThPlayer1;
+    private ArrayList<Thread> thEnemys;
     private Frame frame = new Frame("Lode Runner");
     private TextArea txt, info;
     private ArrayList<int[]> exitPos;
     private ArrayList<int[]> goldsPos;
+
     //constructeurs
     //
     //init
@@ -29,7 +32,10 @@ class playGround{
         this.frame.add(this.info);
         this.frame.setVisible(true);
         this.frame.addKeyListener(this.player1.getKeyListener());
-        this.enemy1.setTarget(this.player1);
+        for(int i=0;i<enemys.size();i++){
+            //this.enemys.get(i).setTarget(this.players.get(i%this.players.size()));
+            this.enemys.get(i).setTarget(this.player1);
+        }
     }
     //standard
     public playGround(FileReader f, int sizeX, int sizeY){
@@ -39,6 +45,9 @@ class playGround{
         this.displayTab = new object[sizeX][sizeY];
         this.exitPos = new ArrayList<int[]>();
         this.goldsPos = new ArrayList<int[]>();
+        this.enemys = new ArrayList<enemy>();
+        this.runEnemys = new ArrayList<Runnable>();
+        this.thEnemys = new ArrayList<Thread>();
         this.txt = new TextArea(sizeY, sizeX);
         this.info = new TextArea(2,20);
         this.frame.setSize(1000,800);
@@ -63,9 +72,9 @@ class playGround{
                             break;
                         }
                         case 'X':{
-                            this.enemy1 = new enemy(i,j,true);
-                            this.RunEnemy1 = this.enemy1;
-                            this.ThEnemy1 = new Thread(this.RunEnemy1);
+                            this.enemys.add(new enemy(i,j,true));
+                            this.runEnemys.add(this.enemys.get(this.enemys.size()-1));
+                            this.thEnemys.add(new Thread(this.runEnemys.get(this.runEnemys.size()-1)));
                             displayTab[i][j] = new object(' ');
                             break;
                         }
@@ -94,48 +103,63 @@ class playGround{
             }
             init();
             this.ThPlayer1.start();
-            this.ThEnemy1.start();
+            for(int i=0;i<thEnemys.size();i++)
+                this.thEnemys.get(i).start();
         }catch(Exception e){System.out.println(e);}
     }
     //methodes
     //
     //getteurs
-    public object[][]   getDisplayTab(){return this.displayTab;}
-    public int          getSizeX(){return this.sizeX;}
-    public int          getSizeY(){return this.sizeY;}
-    public int          getGolds(){return this.golds;}
-    public player       getPlayer1(){return this.player1;}
-    public enemy        getEnemy1(){return this.enemy1;}
-    public Runnable     getRunPlayer1(){return this.RunPlayer1;} 
-    public Runnable     getRunEnemy1(){return this.RunEnemy1;}
-    public Thread       getThPlayer1(){return this.ThPlayer1;}
-    public Thread       getThEnemy1(){return this.ThEnemy1;}
-    public Frame        getFrame(){return this.frame;}
-    public TextArea     getTxt(){return this.txt;}
-    public TextArea     getInfo(){return this.info;}
+    public object[][]           getDisplayTab()   {return this.displayTab;}
+    public int                  getSizeX()        {return this.sizeX;}
+    public int                  getSizeY()        {return this.sizeY;}
+    public int                  getGolds()        {return this.golds;}
+    public player               getPlayer1()      {return this.player1;}
+    public enemy                getEnemy(int i)   {return this.enemys.get(i);}
+    public ArrayList<enemy>     getEnemys()       {return this.enemys;}
+    public Runnable             getRunPlayer1()   {return this.RunPlayer1;} 
+    public Runnable             getRunEnemy(int i){return this.runEnemys.get(i);}
+    public ArrayList<Runnable>  getRunEnemy()     {return this.runEnemys;}
+    public Thread               getThPlayer1()    {return this.ThPlayer1;}
+    public Thread               getThEnemy(int i) {return this.thEnemys.get(i);}
+    public ArrayList<Thread>    getThEnemy()      {return this.thEnemys;}
+    public Frame                getFrame()        {return this.frame;}
+    public TextArea             getTxt()          {return this.txt;}
+    public TextArea             getInfo()         {return this.info;}
+    public int[]                getGoldPos(int i) {return this.goldsPos.get(i);}
+    public int[]                getExitPos(int i) {return this.exitPos.get(i);}
+    public ArrayList<int[]>     getGoldsPos()     {return this.goldsPos;}
+    public ArrayList<int[]>     getExitPos()      {return this.exitPos;}
 
     //others
     public void resetPos(){
-        this.player1.goInit();
-        this.player1.setGold(0);
-        this.enemy1.goInit();
-        for(int i=0;i<this.goldsPos.size();i++){
-            this.displayTab[this.goldsPos.get(i)[0]][this.goldsPos.get(i)[1]].setHidden(false);
+        getPlayer1().goInit();
+        getPlayer1().setGold(0);
+        for(int i=0;i<getEnemys().size();i++)
+            getEnemy(i).goInit();
+        for(int i=0;i<getGoldsPos().size();i++){
+            getDisplayTab()[getGoldPos(i)[0]][getGoldPos(i)[1]].setHidden(false);
         }
         showExit(false);
     }
     public void showExit(boolean b){
-        for(int i=0;i<this.exitPos.size();i++){
-            this.displayTab[this.exitPos.get(i)[0]][this.exitPos.get(i)[1]].setHidden(!b);
+        for(int i=0;i<getExitPos().size();i++){
+            getDisplayTab()[getExitPos(i)[0]][getExitPos(i)[1]].setHidden(!b);
         }
     }
+    public boolean isOnEnemy(character c){
+        for(int i=0;i<getEnemys().size();i++){
+            if(c.getX()==getEnemy(i).getX() && c.getY()==getEnemy(i).getY()-1) return true;
+        }
+        return false;
+    }
     public void updateCharacter(character c){
-        char posC = this.displayTab[c.getX()][c.getY()].getAvailableType();
+        char posC = getDisplayTab()[c.getX()][c.getY()].getAvailableType();
         char UnderPosC;
         //deplacement
         if(c.getY()<39){
-            UnderPosC = this.displayTab[c.getX()][c.getY()+1].getAvailableType();
-            if(UnderPosC =='#'|| (c.getX()==enemy1.getX() && c.getY()==enemy1.getY()-1)) c.setOnFloor(true);
+            UnderPosC = getDisplayTab()[c.getX()][c.getY()+1].getAvailableType();
+            if(UnderPosC =='#'|| isOnEnemy(c)) c.setOnFloor(true);
             else c.setOnFloor(false);
             if(posC==' ' && UnderPosC=='H') c.setOnTopOfLadder(true);
             else c.setOnTopOfLadder(false);
@@ -147,56 +171,64 @@ class playGround{
         
         c.fall();
     }
+    public boolean isCaught(player p){
+        for(int i=0;i<getEnemys().size();i++){
+            if(p.getX()==getEnemy(i).getX() && p.getY()==getEnemy(i).getY())return true;
+        }
+        return false;
+    }
     public void updatePlayer(player p){
         updateCharacter(p);
-        if(p.getY()<39 && p.getX()>0){
-            if(this.displayTab[p.getX()-1][p.getY()+1].getAvailableType()=='#'){
+        int X = p.getX();
+        int Y = p.getY();
+        if(Y<39 && X>0){
+            if(getDisplayTab()[X-1][Y+1].getAvailableType()=='#'){
                 p.setDiggableL(true);
-                updateHole((floor)displayTab[p.getX()-1][p.getY()+1]);
+                updateHole((floor)displayTab[X-1][Y+1]);
             }
             else p.setDiggableL(false);
         }
-        if(p.getY()<39 && p.getX()<99){
-            if(this.displayTab[p.getX()+1][p.getY()+1].getAvailableType()=='#'){
+        if(Y<39 && X<99){
+            if(getDisplayTab()[X+1][Y+1].getAvailableType()=='#'){
                 p.setDiggableR(true);
-                updateHole((floor)displayTab[p.getX()+1][p.getY()+1]);
+                updateHole((floor)getDisplayTab()[X+1][Y+1]);
             }
             else p.setDiggableR(false);
         }
             
-        if(this.displayTab[p.getX()][p.getY()].getAvailableType()=='$' && !this.displayTab[p.getX()][p.getY()].isHidden()){
+        if(getDisplayTab()[X][Y].getAvailableType()=='$' && !getDisplayTab()[X][Y].isHidden()){
             p.setGold(p.getGold()+1);
-            this.displayTab[p.getX()][p.getY()].setHidden(true);
+            getDisplayTab()[X][Y].setHidden(true);
             if(p.getGold()==this.golds){
                 showExit(true);
             }
         }
-        else if((p.getX()==this.enemy1.getX() && p.getY()==this.enemy1.getY()) || this.displayTab[p.getX()][p.getY()].getAvailableType()=='#'){
+        else if( isCaught(p) || getDisplayTab()[X][Y].getAvailableType()=='#'){
             p.setLives(p.getLives()-1);
             resetPos();
         }
-        if(p.getY()==1){
+        if(Y==1){
             p.setEnd(true);
-            this.info.setText("YOU WIN !");
-            System.out.println(this.player1.getName()+" won");
+            getInfo().setText("YOU WIN !");
+            System.out.println(getPlayer1().getName()+" won");
         }
     }
     public void updateEnemy(enemy e){
-        if(this.displayTab[e.getX()][e.getY()].getAvailableType()=='#'){
+        updateCharacter(e);
+        if(getDisplayTab()[e.getX()][e.getY()].getAvailableType()=='#'){
             e.die();
         }
-        else if(this.displayTab[e.getX()][e.getY()].getType()=='#'){
+        else if(getDisplayTab()[e.getX()][e.getY()].getType()=='#'){
             e.setInHole(true);
             escapeFromHole(e);
         }
-        updateCharacter(e);
     }
     public void escapeFromHole(enemy e){
         chronoToEscape cte = new chronoToEscape(e, 3000);
         cte.start();
     }
     public void updateHole(floor f){
-        if((this.player1.getDigL() && (this.player1.getX()==f.getX()+1 && this.player1.getY()==f.getY()-1)) || (this.player1.getDigR() && (this.player1.getX()==f.getX()-1 && this.player1.getY()==f.getY()-1))){
+        if((getPlayer1().getDigL() && (getPlayer1().getX()==f.getX()+1 && getPlayer1().getY()==f.getY()-1)) || (getPlayer1().getDigR() && (getPlayer1().getX()==f.getX()-1 && getPlayer1().getY()==f.getY()-1))){
             f.setHidden(true);
             resealHole(f);
         }
@@ -207,24 +239,31 @@ class playGround{
     }
     
     //toString
+    public boolean enemyHere(int x, int y){
+        for(int i=0;i<getEnemys().size();i++){
+            if(getEnemy(i).getX()==x && getEnemy(i).getY()==y)return true;
+        }
+        return false;
+    }
     public void display(){
-        updatePlayer(this.player1);
-        updateEnemy(this.enemy1);
+        updatePlayer(getPlayer1());
+        for(int i=0;i<getEnemys().size();i++)
+            updateEnemy(getEnemy(i));
         String res = "";
-        for(int j=0;j<this.sizeY;j++){
-            for(int i=0;i<this.sizeX;i++){
-                if(this.player1.getX()==i && this.player1.getY()==j){
-                    res+=this.player1;
+        for(int j=0;j<getSizeY();j++){
+            for(int i=0;i<getSizeX();i++){
+                if(getPlayer1().getX()==i && getPlayer1().getY()==j){
+                    res+=getPlayer1();
                 }
-                else if(this.enemy1.getX()==i && this.enemy1.getY()==j){
-                    res+=this.enemy1;
+                else if(enemyHere(i, j)){
+                    res+=getEnemy(0);//just concat the toString of a enemy don't matter if it's the good enemy
                 }
-                else res+=this.displayTab[i][j];
+                else res+=getDisplayTab()[i][j];
             }
             res+='\n';
         }
-        this.txt.setText(res);
-        this.info.setText("Lives = "+player1.getLives()+"\nGold = "+this.player1.getGold()+"/"+this.golds);
+        getTxt().setText(res);
+        getInfo().setText("Lives = "+getPlayer1().getLives()+"\nGold = "+getPlayer1().getGold()+"/"+getGolds());
         // System.out.println("player pos = ("+this.player1.getX()+" , "+this.player1.getY()+") , onLadder :"+this.player1.isOnLadder()+" , topLadder : "+this.player1.isOnTopOfLadder());
     }
     class chrono extends Thread{
@@ -257,10 +296,8 @@ class playGround{
 
         @Override
         public void run(){
-            synchronized(o){
-                try{Thread.sleep(this.time);}catch(InterruptedException e){System.out.println(e + "class chronoToShow, methode run");}
-                this.o.setHidden(false);
-            }
+            try{Thread.sleep(getTime());}catch(InterruptedException e){System.out.println(e + "class chronoToShow, methode run");}
+            this.o.setHidden(false);
         }
     }
     class chronoToEscape extends chrono{
@@ -276,18 +313,16 @@ class playGround{
 
         @Override
         public void run(){
-            synchronized(e){
-                try{Thread.sleep(this.time);}catch(InterruptedException e){System.out.println(e + "class chronoToEscape, methode run");}
-                this.e.setInHole(false);
-                if(e.getTarget().getX()<e.getX()){
-                    e.setY(e.getY()-1);
-                    e.setX(e.getX()-1);
-                }
-                else{
-                    e.setY(e.getY()-1);
-                    e.setX(e.getX()+1);
-                }
+            try{Thread.sleep(getTime());}catch(InterruptedException e){System.out.println(e + "class chronoToEscape, methode run");}
+            if(e.getTarget().getX()<e.getX()){
+                e.setY(e.getY()-1);
+                e.setX(e.getX()-1);
             }
+            else{
+                e.setY(e.getY()-1);
+                e.setX(e.getX()+1);
+            }
+            this.e.setInHole(false);
         }
     }
     

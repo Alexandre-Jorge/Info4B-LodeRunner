@@ -39,21 +39,21 @@ public class object implements Serializable{
     //méthodes
     //
     //getteurs
-    public int     getX()              {return this.posX;}
-    public int     getY()              {return this.posY;}
-    public int     getInitX()          {return this.initPosX;}
-    public int     getInitY()          {return this.initPosY;}
-    public boolean isHidden()          {return this.hidden;}
-    public char    getAvailableType()  {if(!this.hidden) return this.type;else return ' ';}
-    public char    getType()           {return this.type;}
+    public synchronized int     getX()              {return this.posX;}
+    public synchronized int     getY()              {return this.posY;}
+    public              int     getInitX()          {return this.initPosX;}
+    public              int     getInitY()          {return this.initPosY;}
+    public synchronized boolean isHidden()          {return this.hidden;}
+    public synchronized char    getAvailableType()  {if(!this.hidden) return this.type;else return ' ';}
+    public synchronized char    getType()           {return this.type;}
     //setteurs
-    public void setX(int i)          {this.posX = Math.abs(i);}
-    public void setY(int i)          {this.posY = Math.abs(i);}
-    public void setHidden(boolean b) {this.hidden = b;}
-    public void setType(char c)      {this.type = c;}
+    public synchronized void setX(int i)          {this.posX = Math.abs(i);}
+    public synchronized void setY(int i)          {this.posY = Math.abs(i);}
+    public synchronized void setHidden(boolean b) {this.hidden = b;}
+    public synchronized void setType(char c)      {this.type = c;}
     //toString
     public String toString(){
-        if(!this.hidden) return ""+this.type;
+        if(!this.isHidden()) return ""+this.getType();
         else return " ";
     }
 }

@@ -33,33 +33,29 @@ public class player extends character{
     //methodes
     //
     //getteurs
-    public String  getName()  {return this.name;}
-    public int     getGold()  {return this.nbGold;}
-    public int     getLives() {return this.lives;}
-    public boolean isEnded()  {return this.end;}
+    public              String  getName()  {return this.name;}
+    public              int     getGold()  {return this.nbGold;}
+    public synchronized int     getLives() {return this.lives;}
+    public              boolean isEnded()  {return this.end;}
     
     //setteurs
-    public void setName(String s) {this.name = s;}
-    public void setGold(int i)    {this.nbGold = Math.abs(i);}
-    public void setLives(int i)   {this.lives = Math.abs(i);}
-    public void setEnd(boolean b) {this.end = b;}
+    public              void setName(String s) {this.name = s;}
+    public              void setGold(int i)    {this.nbGold = Math.abs(i);}
+    public synchronized void setLives(int i)   {this.lives = Math.abs(i);}
+    public              void setEnd(boolean b) {this.end = b;}
     //run
     @Override
     public void run(){
-        while(!end){
+        while(!isEnded()){
             // System.out.println("ok");
             if(getLeft())goLeft();
             else if(getRight())goRight();
             else if(getUp())goUp();
             else if(getDown())goDown();
             if(getLives()<1){
-                System.out.print("X = "+getX()+" , Y = "+getY()+"\r");
-                System.out.println("\nplus de vie !");
-                this.end = true;
+                System.out.println("plus de vie !");
+                this.setEnd(true);
 
-            }
-            else{
-                System.out.print("X = "+getX()+" , Y = "+getY()+"\r");
             }
             try{Thread.sleep(70);}catch(InterruptedException e){System.out.println(e);}
         }

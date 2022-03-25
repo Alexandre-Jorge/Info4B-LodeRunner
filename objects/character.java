@@ -1,7 +1,6 @@
 package objects;
 
 import java.awt.event.*;
-import java.sql.Time;
 
 public class character extends object implements Runnable{
     //attributs
@@ -32,32 +31,40 @@ public class character extends object implements Runnable{
     //methodes
     //
     //getteurs
-    public boolean          isOnLadder()     {return this.onLadder;}
-    public boolean          isOnFloor()      {return this.onFloor;}
-    public boolean          isOnZipline()    {return this.onZipline;}
-    public boolean          isInHole()       {return this.inHole;}
-    public boolean          isOnTopOfLadder(){return this.onTopOfLadder;}
-    public MykeyListener    getKeyListener() {return this.keylistener;}
-    public boolean          getLeft()        {return this.left;}
-    public boolean          getRight()       {return this.right;}
-    public boolean          getUp()          {return this.up;}
-    public boolean          getDown()        {return this.down;}
-    public boolean          getDigR()        {return this.digR;}
-    public boolean          getDigL()        {return this.digL;}
+    public synchronized boolean          isOnLadder()     {return this.onLadder;}
+    public synchronized boolean          isOnFloor()      {return this.onFloor;}
+    public synchronized boolean          isOnZipline()    {return this.onZipline;}
+    public synchronized boolean          isInHole()       {return this.inHole;}
+    public synchronized boolean          isOnTopOfLadder(){return this.onTopOfLadder;}
+    public synchronized MykeyListener    getKeyListener() {return this.keylistener;}
+    public synchronized boolean          getLeft()        {return this.left;}
+    public synchronized boolean          getRight()       {return this.right;}
+    public synchronized boolean          getUp()          {return this.up;}
+    public synchronized boolean          getDown()        {return this.down;}
+    public synchronized boolean          getDigR()        {return this.digR;}
+    public synchronized boolean          getDigL()        {return this.digL;}
+    public synchronized boolean          isDiggableL()    {return this.diggableL;}
+    public synchronized boolean          isDiggableR()    {return this.diggableR;}
     //setteurs
-    public void setOnLadder(boolean b)          {this.onLadder = b;}
-    public void setOnFloor(boolean b)           {this.onFloor = b;}
-    public void setOnZipLine(boolean b)         {this.onZipline = b;}
-    public void setInHole(boolean b)            {this.inHole = b;}
-    public void setOnTopOfLadder(boolean b)     {this.onTopOfLadder = b;}
-    public void setDiggableL(boolean b)         {this.diggableL = b;}
-    public void setDiggableR(boolean b)         {this.diggableR = b;}
-    public void setKeyListener(MykeyListener kl){this.keylistener = kl;}
+    public synchronized void setOnLadder(boolean b)          {this.onLadder = b;}
+    public synchronized void setOnFloor(boolean b)           {this.onFloor = b;}
+    public synchronized void setOnZipLine(boolean b)         {this.onZipline = b;}
+    public synchronized void setInHole(boolean b)            {this.inHole = b;}
+    public synchronized void setOnTopOfLadder(boolean b)     {this.onTopOfLadder = b;}
+    public synchronized void setDiggableL(boolean b)         {this.diggableL = b;}
+    public synchronized void setDiggableR(boolean b)         {this.diggableR = b;}
+    public synchronized void setDigL(boolean b)              {this.digL = b;}
+    public synchronized void setDigR(boolean b)              {this.digR = b;}
+    public synchronized void setKeyListener(MykeyListener kl){this.keylistener = kl;}
+    public synchronized void setUp(boolean b)                {this.up = b;}
+    public synchronized void setDown(boolean b)              {this.down = b;}
+    public synchronized void setLeft(boolean b)              {this.left = b;}
+    public synchronized void setRight(boolean b)             {this.right = b;}
     //deplacements
     public void goInit()    {setX(getInitX());setY(getInitY());}
     public boolean goUp(){
         boolean res;
-        if(this.onLadder && getY()>0){
+        if(isOnLadder() && getY()>0){
             setY(getY()-1);
             res=true;
         }
@@ -67,7 +74,7 @@ public class character extends object implements Runnable{
     }
     public boolean goDown(){
         boolean res;
-        if(((this.onLadder && !this.onFloor) || this.onZipline || this.onTopOfLadder) && getY()<39){
+        if(((isOnLadder() && !isOnFloor()) || isOnZipline() || isOnTopOfLadder()) && getY()<39){
             setY(getY()+1);
             res = true;
         }
@@ -76,29 +83,29 @@ public class character extends object implements Runnable{
         return res;
     }
     public boolean goLeft(){
-        if((this.onLadder || this.onFloor || this.onZipline || this.onTopOfLadder) && getX()>0){
+        if((isOnLadder() || isOnFloor() || isOnZipline() || isOnTopOfLadder()) && getX()>0){
             setX(getX()+1);
             return true;
         }
         else return false;
     }
     public boolean goRight(){
-        if((this.onLadder || this.onFloor || this.onZipline || this.onTopOfLadder) && getX()<99){
+        if((isOnLadder() || isOnFloor() || isOnZipline() || isOnTopOfLadder()) && getX()<99){
             setX(getX()-1);
             return true;
         }
         else return false;
     }
-    public void fall(){if(!this.onLadder && !this.onFloor && !this.onZipline && !onTopOfLadder && !inHole && getY()<39) setY(getY()+1);}
+    public void fall(){if(!isOnLadder() && !isOnFloor() && !isOnZipline() && !isOnTopOfLadder() && !isInHole() && getY()<39) setY(getY()+1);}
 
     public boolean dig(char side){
         if(this.getAvailableType()=='O'){
-            if(side=='R' && this.diggableR){
-                this.digR = true;
+            if(side=='R' && isDiggableR()){
+                setDigR(true);
                 return true;
             }
-            else if(side=='L' && this.diggableL){
-                this.digL = true;
+            else if(side=='L' && isDiggableL()){
+                setDigL(true);
                 return true;
             }
             else return false;
@@ -122,23 +129,24 @@ public class character extends object implements Runnable{
         public void keyPressed(KeyEvent e)
         {
             switch(e.getKeyChar()){
-                case 27 : {System.exit(0);break;}
-                case 'z': {up = true;break;}
-                case 'q': {right = true;break;}
-                case 's': {down = true;break;}
-                case 'd': {left = true;break;}
                 case 'a': {
                     dig('L');
-                    try{Thread.sleep(20);}catch(InterruptedException i){System.out.println(i + " class MyKeyListener methods keypressed");}
+                    try{Thread.sleep(30);}catch(InterruptedException i){System.out.println(i + " class MyKeyListener methods keypressed");}
                     keyReleased(e);
                     break;
                 }
                 case 'e': {
                     dig('R');
-                    try{Thread.sleep(10);}catch(InterruptedException i){System.out.println(i + " class MyKeyListener methods keypressed");}
+                    try{Thread.sleep(30);}catch(InterruptedException i){System.out.println(i + " class MyKeyListener methods keypressed");}
                     keyReleased(e);
                     break;
                 }
+                case 'z': {setUp(true);break;}
+                case 'q': {setRight(true);break;}
+                case 's': {setDown(true);break;}
+                case 'd': {setLeft(true);break;}
+                case 27 : {System.exit(0);break;}
+                
 
             }
             // System.out.println("The key Pressed was: " + e.getKeyChar());
@@ -147,12 +155,12 @@ public class character extends object implements Runnable{
         public void keyReleased(KeyEvent e)
         {
             switch(e.getKeyChar()){
-                case 'z': {up = false;break;}
-                case 'q': {right = false;break;}
-                case 's': {down = false;break;}
-                case 'd': {left = false;break;}
-                case 'a': {digL = false;break;}
-                case 'e': {digR = false;break;}
+                case 'z': {setUp(false);break;}
+                case 'q': {setRight(false);break;}
+                case 's': {setDown(false);break;}
+                case 'd': {setLeft(false);break;}
+                case 'a': {setDigL(false);break;}
+                case 'e': {setDigR(false);break;}
             }
             // System.out.println("The key Released was: " + e.getKeyChar());
         }

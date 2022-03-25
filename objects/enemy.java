@@ -37,47 +37,49 @@ public class enemy extends character{
     //
     //getteurs
     public boolean isBot()    {return this.bot;}
-    public player getTarget() {return this.target;}
+    public player  getTarget(){return this.target;}
     //setteurs
     public void setIsBot(boolean b) {this.bot = b;}
     public void setTarget(player p) {this.target = p;}
     //others
     public void die(){
-        this.setInHole(false);
-        this.setY(1);
-        this.setX((int)(Math.random()*98+1));
+        setInHole(false);
+        setY(1);
+        setX((int)(Math.random()*98+1));
     }
     //function AI
     public void AIscript(){
         boolean moved;
-        while(target.getLives()>0){
+        while(getTarget().getLives()>0){
             try{Thread.sleep(100);}catch(InterruptedException e){System.out.println(e);}
             moved = false;
-            if (isOnFloor() || isOnTopOfLadder()){
-                if(isOnLadder()){
-                    if (getY()<this.target.getY()) {moved = this.goDown();}
-                    else if (getY()>this.target.getY()){moved = this.goUp();}
+            if(!isInHole()){
+                if (isOnFloor() || isOnTopOfLadder()){
+                    if(isOnLadder()){
+                        if (getY()<getTarget().getY()) {moved = goDown();}
+                        else if (getY()>getTarget().getY()){moved = goUp();}
+                    }
+                    if((isOnFloor() || isOnTopOfLadder()) && !moved){
+                        if(getX()<getTarget().getX()) {moved = goLeft();}
+                        else if (getX()>getTarget().getX()){moved = goRight();}
+                    }
                 }
-                if((isOnFloor() || isOnTopOfLadder()) && !moved){
-                    if(getX()<this.target.getX()) {moved = this.goLeft();}
-                    else if (getX()>this.target.getX()){moved = this.goRight();}
+                if((isOnLadder() || isOnTopOfLadder())&& !moved){
+                    if (getY()<getTarget().getY()) {moved = goDown();}
+                    else if (getY()>getTarget().getY()){moved = goUp();}
                 }
-            }
-            if((isOnLadder() || isOnTopOfLadder())&& !moved){
-                if (getY()<this.target.getY()) {moved = this.goDown();}
-                else if (getY()>this.target.getY()){moved = this.goUp();}
-            }
-            if(isOnZipline() && !moved){
-                if(getX()<this.target.getX()) {moved = this.goLeft();}
-                else if (getX()>this.target.getX()){moved = this.goRight();}
-                else if(getY()<this.target.getY()){moved = this.goDown();}
+                if(isOnZipline() && !moved){
+                    if(getX()<getTarget().getX()) {moved = goLeft();}
+                    else if (getX()>getTarget().getX()){moved = goRight();}
+                    else if(getY()<getTarget().getY()){moved = goDown();}
+                }
             }
         }
     }
     //
     @Override
     public void run(){
-        if(this.bot){
+        if(isBot()){
             System.out.println("enemy control by AI");
             AIscript();
         }
