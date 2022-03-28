@@ -9,7 +9,7 @@ public class lodeRunner{
         try{
             FileReader f = new FileReader("levels/level1.txt");
             playGround pg = new playGround(f,WIDTH,HEIGHT);
-            while(pg.getThPlayer1().isAlive()){
+            while(pg.getThPlayer(0).isAlive()){///////!\\\\\ A MODIFIER !!!
                 pg.display();
                 try{Thread.sleep(1000/50);}catch(InterruptedException e){System.out.println(e);}//50 fps
             }

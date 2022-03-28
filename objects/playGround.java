@@ -10,11 +10,11 @@ public class playGround{
     //attributs
     private object displayTab[][];
     private int sizeX, sizeY, golds=0;
-    private player player1;
+    private ArrayList<player> players;
     private ArrayList<enemy> enemys;
-    private Runnable RunPlayer1;
+    private ArrayList<Runnable> runPlayers;
     private ArrayList<Runnable> runEnemys;
-    private Thread ThPlayer1;
+    private ArrayList<Thread> thPlayers;
     private ArrayList<Thread> thEnemys;
     private Frame frame = new Frame("Lode Runner");
     private TextArea gamePlay, info;
@@ -32,11 +32,10 @@ public class playGround{
         this.frame.add(this.gamePlay);
         this.frame.add(this.info);
         this.frame.setVisible(true);
-        this.frame.addKeyListener(this.player1.getKeyListener());
-        for(int i=0;i<enemys.size();i++){
-            //this.enemys.get(i).setTarget(this.players.get(i%this.players.size()));
-            this.enemys.get(i).setTarget(this.player1);
-        }
+        for(int i=0;i<this.players.size();i++)
+            this.frame.addKeyListener(this.players.get(i).getKeyListener());
+        for(int i=0;i<this.enemys.size();i++)
+            this.enemys.get(i).setTarget(this.players.get(i%this.players.size()));
     }
     //standard
     public playGround(FileReader f, int sizeX, int sizeY){
@@ -47,8 +46,11 @@ public class playGround{
         this.exitPos = new ArrayList<int[]>();
         this.goldsPos = new ArrayList<int[]>();
         this.enemys = new ArrayList<enemy>();
+        this.players = new ArrayList<player>();
         this.runEnemys = new ArrayList<Runnable>();
+        this.runPlayers = new ArrayList<Runnable>();
         this.thEnemys = new ArrayList<Thread>();
+        this.thPlayers = new ArrayList<Thread>();
         this.gamePlay = new TextArea(sizeY, sizeX);
         this.info = new TextArea(2,20);
         this.frame.setSize(1000,800);
@@ -59,9 +61,9 @@ public class playGround{
                 for(int i=0;i<sizeX;i++){
                     switch(line.charAt(i)){
                         case 'O':{
-                            this.player1 = new player("player1",i,j, this);
-                            this.RunPlayer1 = this.player1;
-                            this.ThPlayer1 = new Thread(this.RunPlayer1);
+                            this.players.add(new player("player",i,j, this));
+                            this.runPlayers.add(this.players.get(this.players.size()-1));
+                            this.thPlayers.add(new Thread(this.runPlayers.get(this.runPlayers.size()-1)));
                             displayTab[i][j] = new object(' ');
                             break;
                         }
@@ -103,39 +105,45 @@ public class playGround{
                 j++;
             }
             init();
-            this.ThPlayer1.start();
-            for(int i=0;i<thEnemys.size();i++)
+            for(int i=0;i<this.thPlayers.size();i++)
+                this.thPlayers.get(i).start();
+            for(int i=0;i<this.thEnemys.size();i++)
                 this.thEnemys.get(i).start();
         }catch(Exception e){System.out.println(e);}
     }
     //methodes
     //
     //getteurs
-    public object[][]           getDisplayTab()   {return this.displayTab;}
-    public int                  getSizeX()        {return this.sizeX;}
-    public int                  getSizeY()        {return this.sizeY;}
-    public int                  getGolds()        {return this.golds;}
-    public player               getPlayer1()      {return this.player1;}
-    public enemy                getEnemy(int i)   {return this.enemys.get(i);}
-    public ArrayList<enemy>     getEnemys()       {return this.enemys;}
-    public Runnable             getRunPlayer1()   {return this.RunPlayer1;} 
-    public Runnable             getRunEnemy(int i){return this.runEnemys.get(i);}
-    public ArrayList<Runnable>  getRunEnemy()     {return this.runEnemys;}
-    public Thread               getThPlayer1()    {return this.ThPlayer1;}
-    public Thread               getThEnemy(int i) {return this.thEnemys.get(i);}
-    public ArrayList<Thread>    getThEnemy()      {return this.thEnemys;}
-    public Frame                getFrame()        {return this.frame;}
-    public TextArea             getGamePlay()     {return this.gamePlay;}
-    public TextArea             getInfo()         {return this.info;}
-    public int[]                getGoldPos(int i) {return this.goldsPos.get(i);}
-    public int[]                getExitPos(int i) {return this.exitPos.get(i);}
-    public ArrayList<int[]>     getGoldsPos()     {return this.goldsPos;}
-    public ArrayList<int[]>     getExitPos()      {return this.exitPos;}
+    public object[][]           getDisplayTab()    {return this.displayTab;}
+    public int                  getSizeX()         {return this.sizeX;}
+    public int                  getSizeY()         {return this.sizeY;}
+    public int                  getGolds()         {return this.golds;}
+    public player               getPlayer(int i)   {return this.players.get(i);}
+    public enemy                getEnemy(int i)    {return this.enemys.get(i);}
+    public ArrayList<player>    getPlayers()       {return this.players;}
+    public ArrayList<enemy>     getEnemys()        {return this.enemys;}
+    public Runnable             getRunPlayer(int i){return this.runPlayers.get(i);}
+    public Runnable             getRunEnemy(int i) {return this.runEnemys.get(i);}
+    public ArrayList<Runnable>  getRunPlayers()    {return this.runPlayers;} 
+    public ArrayList<Runnable>  getRunEnemys()     {return this.runEnemys;}
+    public Thread               getThPlayer(int i) {return this.thPlayers.get(i);}
+    public Thread               getThEnemy(int i)  {return this.thEnemys.get(i);}
+    public ArrayList<Thread>    getThPlayers()     {return this.thPlayers;}
+    public ArrayList<Thread>    getThEnemys()      {return this.thEnemys;}
+    public Frame                getFrame()         {return this.frame;}
+    public TextArea             getGamePlay()      {return this.gamePlay;}
+    public TextArea             getInfo()          {return this.info;}
+    public int[]                getGoldPos(int i)  {return this.goldsPos.get(i);}
+    public int[]                getExitPos(int i)  {return this.exitPos.get(i);}
+    public ArrayList<int[]>     getGoldsPos()      {return this.goldsPos;}
+    public ArrayList<int[]>     getExitPos()       {return this.exitPos;}
 
     //others
     public void resetPos(){
-        getPlayer1().goInit();
-        getPlayer1().setGold(0);
+        for(int i=0;i<getPlayers().size();i++){
+            getPlayer(i).goInit();
+            getPlayer(i).setGold(0);
+        }
         for(int i=0;i<getEnemys().size();i++)
             getEnemy(i).goInit();
         for(int i=0;i<getGoldsPos().size();i++){
@@ -151,17 +159,19 @@ public class playGround{
     }
     
     public void escapeFromHole(enemy e){
-        chronoToEscape cte = new chronoToEscape(e, 3000);
+        chronoToEscape cte = new chronoToEscape(e, 3500);
         cte.start();
     }
     public void updateHole(floor f){
-        if((getPlayer1().getDigL() && (getPlayer1().getX()==f.getX()+1 && getPlayer1().getY()==f.getY()-1)) || (getPlayer1().getDigR() && (getPlayer1().getX()==f.getX()-1 && getPlayer1().getY()==f.getY()-1))){
-            f.setHidden(true);
-            resealHole(f);
+        for(int i=0;i<getPlayers().size();i++){
+            if((getPlayer(i).getDigL() && (getPlayer(i).getX()==f.getX()+1 && getPlayer(i).getY()==f.getY()-1)) || (getPlayer(i).getDigR() && (getPlayer(i).getX()==f.getX()-1 && getPlayer(i).getY()==f.getY()-1))){
+                f.setHidden(true);
+                resealHole(f);
+            }
         }
     }
     public void resealHole(floor f){
-        chronoToShow cts = new chronoToShow(f,5000);
+        chronoToShow cts = new chronoToShow(f,8000);
         cts.start();
     }
     
@@ -171,26 +181,35 @@ public class playGround{
         }
         return false;
     }
+    public boolean playerHere(int x, int y){
+        for(int i=0;i<getPlayers().size();i++){
+            if(getPlayer(i).getX()==x && getPlayer(i).getY()==y)return true;
+        }
+        return false;
+    }
     //toString
     String res = "";
     public void display(){
-        if(getPlayer1().isEnded())return;
+        //if(getPlayer1().isEnded())return;
         res = "";
         for(int j=0;j<getSizeY();j++){
             for(int i=0;i<getSizeX();i++){
-                if(getPlayer1().getX()==i && getPlayer1().getY()==j){
-                    res+=getPlayer1();
+                if(playerHere(i, j)){
+                    res+=getPlayer(0).toString();//just concat the toString of a player don't matter if it's the good player
                 }
                 else if(enemyHere(i, j)){
-                    res+=getEnemy(0);//just concat the toString of a enemy don't matter if it's the good enemy
+                    res+=getEnemy(0).toString();//just concat the toString of a enemy don't matter if it's the good enemy
                 }
                 else res+=getDisplayTab()[i][j];
             }
             res+='\n';
         }
         getGamePlay().setText(res);
-        getInfo().setText("Lives = "+getPlayer1().getLives()+"\nGold = "+getPlayer1().getGold()+"/"+getGolds());
-        // System.out.println("player pos = ("+this.player1.getX()+" , "+this.player1.getY()+") , onLadder :"+this.player1.isOnLadder()+" , topLadder : "+this.player1.isOnTopOfLadder());
+        getInfo().setText("t");
+        for(int i=0;i<getPlayers().size();i++){
+            getInfo().append("player : "+getPlayer(i)+"\n");
+            getInfo().append("Lives = "+getPlayer(i).getLives()+"\nGold = "+getPlayer(i).getGold()+"/"+getGolds()+"\n");
+        }
     }
     class chrono extends Thread{
         protected object o;
@@ -224,6 +243,10 @@ public class playGround{
         public void run(){
             try{Thread.sleep(getTime());}catch(InterruptedException e){System.out.println(e + "class chronoToShow, methode run");}
             this.o.setHidden(false);
+            for(int i=0;i<getEnemys().size();i++){
+                if(getEnemy(i).getX()==o.getX() && getEnemy(i).getY()==o.getY())
+                    getEnemy(i).die();
+            }
         }
     }
     class chronoToEscape extends chrono{
@@ -240,7 +263,6 @@ public class playGround{
         @Override
         public void run(){
             try{Thread.sleep(getTime());}catch(InterruptedException e){System.out.println(e + "class chronoToEscape, methode run");}
-            this.e.setInHole(false);
             if(e.getTarget().getX()<e.getX()){
                 e.setY(e.getY()-1);
                 e.setX(e.getX()-1);
@@ -249,6 +271,7 @@ public class playGround{
                 e.setY(e.getY()-1);
                 e.setX(e.getX()+1);
             }
+            this.e.setInHole(false);
         }
     }
     

@@ -49,10 +49,7 @@ public class enemy extends character{
     }
     public void updateEnemy(){
         updateCharacter();
-        if(getPlayGround().getDisplayTab()[getX()][getY()].getAvailableType()=='#'){
-            die();
-        }
-        else if(getPlayGround().getDisplayTab()[getX()][getY()].getType()=='#' && !isInHole()){
+        if(getPlayGround().getDisplayTab()[getX()][getY()].getType()=='#' && !isInHole()){
             setInHole(true);
             getPlayGround().escapeFromHole(this);
         }
@@ -91,12 +88,11 @@ public class enemy extends character{
     public void run(){
         if(isBot()){
             System.out.println("enemy control by AI");
-            //AIscript();
             AI ai = new AI();
             ai.start();
         }
         else System.out.println("enemy control by player");
-        while(getPlayGround().getThPlayer1().isAlive()){
+        while(getPlayGround().getThPlayer(0).isAlive()){/////!\\\\ A MODIFIER !!!
             updateEnemy();
         }
     }

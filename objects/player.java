@@ -99,7 +99,6 @@ public class player extends character{
         @Override
         public void run(){
             while(!isEnded()){
-                // System.out.println("ok");
                 if(getLeft())goLeft();
                 else if(getRight())goRight();
                 else if(getUp())goUp();

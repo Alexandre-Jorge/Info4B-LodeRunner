@@ -182,7 +182,6 @@ public class character extends object implements Runnable{
                 
 
             }
-            // System.out.println("The key Pressed was: " + e.getKeyChar());
         }
         @Override
         public void keyReleased(KeyEvent e)
@@ -195,7 +194,6 @@ public class character extends object implements Runnable{
                 case 'a': {setDigL(false);break;}
                 case 'e': {setDigR(false);break;}
             }
-            // System.out.println("The key Released was: " + e.getKeyChar());
         }
     }
 }
