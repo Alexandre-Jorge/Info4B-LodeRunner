@@ -100,13 +100,19 @@ class Connexion extends Thread{
     public void setPlayGround(playGround pg){
         this.pg = pg;
     }
+    public DatagramPacket getPacket(DatagramSocket socket, int i) throws IOException{
+        byte[] data = new byte[i];
+        DatagramPacket pkt = new DatagramPacket(data, data.length);
+        socket.receive(pkt);
+        return pkt;
+    }
     @Override
     public void run(){
         try{
             DatagramPacket commandPacket;
             String[] commands;
             do{
-                commandPacket = lodeRunner_serv.getPacket(soc, 256);
+                commandPacket = getPacket(soc, 256);
                 commands = new String(commandPacket.getData()).split(" ");
                 //System.out.println(commands[0]+commands[1]);
                 switch(commands[0]){
