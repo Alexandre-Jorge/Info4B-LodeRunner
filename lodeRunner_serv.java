@@ -131,19 +131,25 @@ class Connexion extends Thread{
                     }
                     case "SET_LEFT":{
                         System.out.println(commands[0]+" "+commands[1]);
-                        if(type.equals("player"))
+                        if(type.equals("player")){
                             pg.getPlayer(id).setLeft(Boolean.parseBoolean(commands[1].trim()));
-                        else
+                            System.out.println("PLAYER :: RIGHT = "+pg.getPlayer(id).getRight()+"\nLEFT = "+pg.getPlayer(id).getLeft());
+                        }
+                        else{
                             pg.getEnemy(id).setLeft(Boolean.parseBoolean(commands[1].trim()));
-                        System.out.println("RIGHT = "+pg.getPlayer(id).getRight()+"\nLEFT = "+pg.getPlayer(id).getLeft());
+                            System.out.println("ENEMY :: RIGHT = "+pg.getEnemy(id).getRight()+"\nLEFT = "+pg.getEnemy(id).getLeft());
+                        }
                         break;
                     }
                     case "SET_RIGHT":{
-                        if(type.equals("player"))
+                        if(type.equals("player")){
                             pg.getPlayer(id).setRight(Boolean.parseBoolean(commands[1].trim()));
-                        else
+                            System.out.println("PLAYER :: RIGHT = "+pg.getPlayer(id).getRight()+"\nLEFT = "+pg.getPlayer(id).getLeft());
+                        }
+                        else{
                             pg.getEnemy(id).setRight(Boolean.parseBoolean(commands[1].trim()));
-                        System.out.println("RIGHT = "+pg.getPlayer(id).getRight()+"\nLEFT = "+pg.getPlayer(id).getLeft());
+                            System.out.println("ENEMY :: RIGHT = "+pg.getEnemy(id).getRight()+"\nLEFT = "+pg.getEnemy(id).getLeft());
+                        }
                         break;
                     }
                     case "SET_DIG_L":{
