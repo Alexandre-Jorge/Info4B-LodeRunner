@@ -1,0 +1,9 @@
+todo list :
+
+lodeRunner_cli : keyListener qui envoie des requetes UDP qui remplacent le keyListener des characters
+
+lodeRunner_serv : envoyer au client seulement les String des affichage (gameplay, info)
+
+character : un keyListener comme avant pour la solo et un Listener qui a pour evenement les commande envoyer par le keyListener du client.
+
+playGround : nouveau constructeur

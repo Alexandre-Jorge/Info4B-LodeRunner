@@ -1,6 +1,7 @@
 package objects;
 
-public class floor extends object{
+
+public class floor extends object {
     public floor(){
         super('#');
     }

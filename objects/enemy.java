@@ -7,29 +7,29 @@ public class enemy extends character{
     //constructeurs
     //
     //par defaut
-    public enemy(playGround pg){
-        super('X',pg);
+    public enemy(playGround pg, boolean soloMode){
+        super('X',pg,soloMode);
         this.bot = true;
     }
     //standard 1
-    public enemy(int x, int y, playGround pg){
-        super('X', x, y, pg);
+    public enemy(int x, int y, playGround pg, boolean soloMode){
+        super('X', x, y, pg,soloMode);
         this.bot = true;
     }
     //standard 2
-    public enemy(int x, int y, boolean b, playGround pg){
-        super('X', x, y, pg);
+    public enemy(int x, int y, boolean b, playGround pg, boolean soloMode){
+        super('X', x, y, pg,soloMode);
         this.bot = b;
     }
     //standard 3
-    public enemy(int x, int y, player p, playGround pg){
-        super('X', x, y, pg);
+    public enemy(int x, int y, player p, playGround pg, boolean soloMode){
+        super('X', x, y, pg,soloMode);
         this.bot = true;
         this.target = p;
     }
     //standard 4
-    public enemy(int x, int y, boolean b, player p, playGround pg){
-        super('X', x, y, pg);
+    public enemy(int x, int y, boolean b, player p, playGround pg, boolean soloMode){
+        super('X', x, y, pg,soloMode);
         this.bot = b;
         this.target = p;
     }
@@ -91,7 +91,11 @@ public class enemy extends character{
             AI ai = new AI();
             ai.start();
         }
-        else System.out.println("enemy control by player");
+        else {
+            System.out.println("enemy control by player");
+            Control ctrl = new Control();
+            ctrl.start();
+        }
         while(getPlayGround().getThPlayer(0).isAlive()){/////!\\\\ A MODIFIER !!!
             updateEnemy();
         }
@@ -124,6 +128,18 @@ public class enemy extends character{
                         else if(getY()<getTarget().getY()){moved = goDown();}
                     }
                 }
+            }
+        }
+    }
+    class Control extends Thread{
+        @Override
+        public void run(){
+            while(this.isAlive()){
+                if(getLeft())goLeft();
+                else if(getRight())goRight();
+                else if(getUp())goUp();
+                else if(getDown())goDown();
+                try{Thread.sleep(70);}catch(InterruptedException e){System.out.println(e);}
             }
         }
     }

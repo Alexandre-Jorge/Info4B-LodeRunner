@@ -1,7 +1,7 @@
 package objects;
 
 
-public class ladder extends object{
+public class ladder extends object {
     public ladder(){
         super('H');
     }

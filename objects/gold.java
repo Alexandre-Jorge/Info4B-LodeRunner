@@ -1,6 +1,8 @@
 package objects;
 
-public class gold extends object{
+
+
+public class gold extends object {
     public gold(){
         super('$');
     }

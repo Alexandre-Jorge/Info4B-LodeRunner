@@ -11,25 +11,26 @@ public class character extends object implements Runnable{
     //constructeurs
     //
     //fonction init
-    private void init(){
+    private void init(boolean solo){
         this.onLadder      = false;
         this.onFloor       = false;
         this.onZipline     = false;
         this.inHole        = false;
         this.onTopOfLadder = false;
-        this.keylistener   = new MykeyListener();
+        if(solo)
+            this.keylistener   = new MykeyListener();
     }
     //standard 1
-    public character(char type, playGround pg){
+    public character(char type, playGround pg, boolean soloMode){
         super(type);
         this.pg = pg;
-        init();
+        init(soloMode);
     }
     //standard 2
-    public character(char type, int x, int y, playGround pg){
+    public character(char type, int x, int y, playGround pg, boolean soloMode){
         super(type, x, y);
         this.pg = pg;
-        init();
+        init(soloMode);
     }
     //methodes
     //

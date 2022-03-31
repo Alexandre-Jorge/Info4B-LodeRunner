@@ -6,7 +6,7 @@ import java.util.*;
 
 import java.awt.*;
 
-public class playGround{
+public class playGround implements Serializable{
     //attributs
     private object displayTab[][];
     private int sizeX, sizeY, golds=0;
@@ -37,7 +37,7 @@ public class playGround{
         for(int i=0;i<this.enemys.size();i++)
             this.enemys.get(i).setTarget(this.players.get(i%this.players.size()));
     }
-    //standard
+    //standard mode solo
     public playGround(FileReader f, int sizeX, int sizeY){
         int j=0;
         this.sizeX = sizeX;
@@ -61,7 +61,7 @@ public class playGround{
                 for(int i=0;i<sizeX;i++){
                     switch(line.charAt(i)){
                         case 'O':{
-                            this.players.add(new player("player",i,j, this));
+                            this.players.add(new player("player",i,j, this, true));
                             this.runPlayers.add(this.players.get(this.players.size()-1));
                             this.thPlayers.add(new Thread(this.runPlayers.get(this.runPlayers.size()-1)));
                             displayTab[i][j] = new object(' ');
@@ -75,7 +75,93 @@ public class playGround{
                             break;
                         }
                         case 'X':{
-                            this.enemys.add(new enemy(i,j,true,this));
+                            this.enemys.add(new enemy(i,j,true,this,true));
+                            this.runEnemys.add(this.enemys.get(this.enemys.size()-1));
+                            this.thEnemys.add(new Thread(this.runEnemys.get(this.runEnemys.size()-1)));
+                            displayTab[i][j] = new object(' ');
+                            break;
+                        }
+                        case 'H':{
+                            displayTab[i][j] = new ladder(i,j);
+                            break;
+                        }
+                        case 'h':{
+                            displayTab[i][j] = new ladder(i,j,true);
+                            int[] tmp = {i,j};
+                            this.exitPos.add(tmp);
+                            break;
+                        }
+                        case '#':{
+                            displayTab[i][j] = new floor(i,j);
+                            break;
+                        }
+                        case '_':{
+                            displayTab[i][j] = new zipline(i,j);
+                            break;
+                        }    
+                        default : {displayTab[i][j] = new object(line.charAt(i));}
+                    }
+                }
+                j++;
+            }
+            init();
+            for(int i=0;i<this.thPlayers.size();i++)
+                this.thPlayers.get(i).start();
+            for(int i=0;i<this.thEnemys.size();i++)
+                this.thEnemys.get(i).start();
+        }catch(Exception e){System.out.println(e);}
+    }
+    //standard mode multi
+    public playGround(FileReader f, int sizeX, int sizeY,int nbPlayer, int nbEnemy){
+        int j=0;
+        this.sizeX = sizeX;
+        this.sizeY = sizeY;
+        this.displayTab = new object[sizeX][sizeY];
+        this.exitPos = new ArrayList<int[]>();
+        this.goldsPos = new ArrayList<int[]>();
+        this.enemys = new ArrayList<enemy>();
+        this.players = new ArrayList<player>();
+        this.runEnemys = new ArrayList<Runnable>();
+        this.runPlayers = new ArrayList<Runnable>();
+        this.thEnemys = new ArrayList<Thread>();
+        this.thPlayers = new ArrayList<Thread>();
+        this.gamePlay = new TextArea(sizeY, sizeX);
+        this.info = new TextArea(2,20);
+        this.frame.setSize(1000,800);
+        try{
+            BufferedReader buf = new BufferedReader(f) ;
+            String line;
+            while((line = buf.readLine()) != null){
+                for(int i=0;i<sizeX;i++){
+                    switch(line.charAt(i)){
+                        case 'O':{
+                            System.out.println("players.size < nbPlayer => "+this.players.size()+" < "+nbPlayer);
+                            if(this.players.size()<nbPlayer){
+                                this.players.add(new player("player",i,j, this,false));
+                                this.runPlayers.add(this.players.get(this.players.size()-1));
+                                this.thPlayers.add(new Thread(this.runPlayers.get(this.runPlayers.size()-1)));
+                                displayTab[i][j] = new object(' ');
+                            }
+                            else{
+                                displayTab[i][j] = new object(' ');
+                            }
+                            break;
+                        }
+                        case '$':{
+                            displayTab[i][j] = new gold(i,j);
+                            this.golds++;
+                            int[] tmp = {i,j};
+                            this.goldsPos.add(tmp);
+                            break;
+                        }
+                        case 'X':{
+                            System.out.println("enemys.size < nbEnemy => "+this.enemys.size()+" < "+nbEnemy);
+                            if(this.enemys.size()<nbEnemy){
+                                this.enemys.add(new enemy(i,j,false,this,false));
+                            }
+                            else{
+                                this.enemys.add(new enemy(i,j,true,this,false));
+                            }
                             this.runEnemys.add(this.enemys.get(this.enemys.size()-1));
                             this.thEnemys.add(new Thread(this.runEnemys.get(this.runEnemys.size()-1)));
                             displayTab[i][j] = new object(' ');
@@ -210,6 +296,22 @@ public class playGround{
             getInfo().append("player : "+getPlayer(i)+"\n");
             getInfo().append("Lives = "+getPlayer(i).getLives()+"\nGold = "+getPlayer(i).getGold()+"/"+getGolds()+"\n");
         }
+    }
+    public String displayToSend(){
+        res = "";
+        for(int j=0;j<getSizeY();j++){
+            for(int i=0;i<getSizeX();i++){
+                if(playerHere(i, j)){
+                    res+=getPlayer(0).toString();//just concat the toString of a player don't matter if it's the good player
+                }
+                else if(enemyHere(i, j)){
+                    res+=getEnemy(0).toString();//just concat the toString of a enemy don't matter if it's the good enemy
+                }
+                else res+=getDisplayTab()[i][j];
+            }
+            res+='\n';
+        }
+        return res;
     }
     class chrono extends Thread{
         protected object o;

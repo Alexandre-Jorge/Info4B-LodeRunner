@@ -14,19 +14,19 @@ public class player extends character{
         this.lives     = 5;
     }
     //par defaut
-    public player(playGround pg){
-        super('O', pg);
+    public player(playGround pg, boolean soloMode){
+        super('O', pg,soloMode);
         init();
     }
     //standard 1
-    public player(String name, playGround pg){
-        super('O', pg);
+    public player(String name, playGround pg, boolean soloMode){
+        super('O', pg,soloMode);
         init();
         this.name = name;
     }
     //standard 2
-    public player(String name, int posX, int posY, playGround pg){
-        super('O',posX,posY, pg);
+    public player(String name, int posX, int posY, playGround pg, boolean soloMode){
+        super('O',posX,posY, pg,soloMode);
         init();
         this.name = name;
     }
@@ -89,8 +89,8 @@ public class player extends character{
     //run
     @Override
     public void run(){
-        Control ctrl = new Control();
-        ctrl.start();
+            Control ctrl = new Control();
+            ctrl.start();
         while(!isEnded()){
             updatePlayer();
         }
