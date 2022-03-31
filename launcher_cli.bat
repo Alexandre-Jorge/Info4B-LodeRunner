@@ -1,7 +1,5 @@
 @echo off
-cls
-c:
-cd C:\Users\utilisateur\Documents\universite\L2\S4\Info4B\Projet\objects
+cd objects
 javac *.java
 cd ..
 javac *.java
