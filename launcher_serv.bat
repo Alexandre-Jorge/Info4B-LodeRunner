@@ -4,5 +4,5 @@ javac *.java
 cd ..
 javac *.java
 if %ERRORLEVEL% neq 0 goto error
-java lodeRunner_serv
+java LodeRunner_serv
 :error

@@ -2,7 +2,7 @@ package objects;
 
 import java.io.Serializable;
 
-public class object implements Serializable{
+public class Object implements Serializable{
     //attributs
     private char type;
     private int posX, posY, initPosX, initPosY;
@@ -10,7 +10,7 @@ public class object implements Serializable{
     //constructeur
     //
     //standard1
-    public object(char type, int x, int y, boolean b){
+    public Object(char type, int x, int y, boolean b){
         this.type = type;
         this.posX = x;
         this.posY = y;
@@ -19,7 +19,7 @@ public class object implements Serializable{
         this.hidden = b;
     }
     //standard2
-    public object(char type, int x, int y){
+    public Object(char type, int x, int y){
         this.type = type;
         this.posX = x;
         this.posY = y;
@@ -28,7 +28,7 @@ public class object implements Serializable{
         this.hidden = false;
     }
     //standard3
-    public object(char type){
+    public Object(char type){
         this.type = type;
         this.posX = 0;
         this.posY = 0;

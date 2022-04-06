@@ -2,12 +2,12 @@ package objects;
 
 import java.awt.event.*;
 
-public class character extends object implements Runnable{
+public class Character extends Object implements Runnable{
     //attributs
     private boolean onLadder, onFloor, onZipline, inHole, onTopOfLadder, diggableR, diggableL;
     protected MykeyListener keylistener;
     protected boolean left, right, up, down, digL, digR;
-    private playGround pg;
+    private PlayGround pg;
     //constructeurs
     //
     //fonction init
@@ -21,13 +21,13 @@ public class character extends object implements Runnable{
             this.keylistener   = new MykeyListener();
     }
     //standard 1
-    public character(char type, playGround pg, boolean soloMode){
+    public Character(char type, PlayGround pg, boolean soloMode){
         super(type);
         this.pg = pg;
         init(soloMode);
     }
     //standard 2
-    public character(char type, int x, int y, playGround pg, boolean soloMode){
+    public Character(char type, int x, int y, PlayGround pg, boolean soloMode){
         super(type, x, y);
         this.pg = pg;
         init(soloMode);
@@ -49,7 +49,7 @@ public class character extends object implements Runnable{
     public synchronized boolean          getDigL()        {return this.digL;}
     public synchronized boolean          isDiggableL()    {return this.diggableL;}
     public synchronized boolean          isDiggableR()    {return this.diggableR;}
-    public synchronized playGround       getPlayGround()  {return this.pg;}
+    public synchronized PlayGround       getPlayGround()  {return this.pg;}
     //setteurs
     public synchronized void setOnLadder(boolean b)          {this.onLadder = b;}
     public synchronized void setOnFloor(boolean b)           {this.onFloor = b;}

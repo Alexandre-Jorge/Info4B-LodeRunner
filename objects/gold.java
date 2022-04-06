@@ -2,14 +2,14 @@ package objects;
 
 
 
-public class gold extends object {
-    public gold(){
+public class Gold extends Object {
+    public Gold(){
         super('$');
     }
-    public gold(int x, int y){
+    public Gold(int x, int y){
         super('$', x, y);
     }
-    public gold(int x, int y, boolean hide){
+    public Gold(int x, int y, boolean hide){
         super('$', x, y, hide);
     }
 }

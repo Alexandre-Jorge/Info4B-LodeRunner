@@ -1,14 +1,14 @@
 package objects;
 
 
-public class ladder extends object {
-    public ladder(){
+public class Ladder extends Object {
+    public Ladder(){
         super('H');
     }
-    public ladder(int x, int y){
+    public Ladder(int x, int y){
         super('H', x, y);
     }
-    public ladder(int x, int y, boolean hide){
+    public Ladder(int x, int y, boolean hide){
         super('H', x, y, hide);
     }
 }

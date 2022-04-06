@@ -1,6 +1,6 @@
 package objects;
 
-public class player extends character{
+public class Player extends Character{
     //attributs
     private String name;
     private int nbGold, lives;
@@ -14,18 +14,18 @@ public class player extends character{
         this.lives     = 5;
     }
     //par defaut
-    public player(playGround pg, boolean soloMode){
+    public Player(PlayGround pg, boolean soloMode){
         super('O', pg,soloMode);
         init();
     }
     //standard 1
-    public player(String name, playGround pg, boolean soloMode){
+    public Player(String name, PlayGround pg, boolean soloMode){
         super('O', pg,soloMode);
         init();
         this.name = name;
     }
     //standard 2
-    public player(String name, int posX, int posY, playGround pg, boolean soloMode){
+    public Player(String name, int posX, int posY, PlayGround pg, boolean soloMode){
         super('O',posX,posY, pg,soloMode);
         init();
         this.name = name;
@@ -57,14 +57,14 @@ public class player extends character{
         if(Y<39 && X>0){
             if(getPlayGround().getDisplayTab()[X-1][Y+1].getAvailableType()=='#'){
                 setDiggableL(true);
-                getPlayGround().updateHole((floor)getPlayGround().getDisplayTab()[X-1][Y+1]);
+                getPlayGround().updateHole((Floor)getPlayGround().getDisplayTab()[X-1][Y+1]);
             }
             else setDiggableL(false);
         }
         if(Y<39 && X<99){
             if(getPlayGround().getDisplayTab()[X+1][Y+1].getAvailableType()=='#'){
                 setDiggableR(true);
-                getPlayGround().updateHole((floor)getPlayGround().getDisplayTab()[X+1][Y+1]);
+                getPlayGround().updateHole((Floor)getPlayGround().getDisplayTab()[X+1][Y+1]);
             }
             else setDiggableR(false);
         }

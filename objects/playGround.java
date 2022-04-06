@@ -6,12 +6,12 @@ import java.util.*;
 
 import java.awt.*;
 
-public class playGround implements Serializable{
+public class PlayGround implements Serializable{
     //attributs
-    private object displayTab[][];
+    private Object displayTab[][];
     private int sizeX, sizeY, golds=0;
-    private ArrayList<player> players;
-    private ArrayList<enemy> enemys;
+    private ArrayList<Player> players;
+    private ArrayList<Enemy> enemys;
     private ArrayList<Runnable> runPlayers;
     private ArrayList<Runnable> runEnemys;
     private ArrayList<Thread> thPlayers;
@@ -23,30 +23,16 @@ public class playGround implements Serializable{
 
     //constructeurs
     //
-    //init
-    public void init(){
-        this.gamePlay.setFocusable(false);
-        this.gamePlay.setFont(new Font("Monospaced",Font.BOLD, 12));
-        this.info.setFocusable(false);
-        this.frame.setLayout(new FlowLayout());
-        this.frame.add(this.gamePlay);
-        this.frame.add(this.info);
-        this.frame.setVisible(true);
-        for(int i=0;i<this.players.size();i++)
-            this.frame.addKeyListener(this.players.get(i).getKeyListener());
-        for(int i=0;i<this.enemys.size();i++)
-            this.enemys.get(i).setTarget(this.players.get(i%this.players.size()));
-    }
     //standard mode solo
-    public playGround(FileReader f, int sizeX, int sizeY){
+    public PlayGround(FileReader f, int sizeX, int sizeY){
         int j=0;
         this.sizeX = sizeX;
         this.sizeY = sizeY;
-        this.displayTab = new object[sizeX][sizeY];
+        this.displayTab = new Object[sizeX][sizeY];
         this.exitPos = new ArrayList<int[]>();
         this.goldsPos = new ArrayList<int[]>();
-        this.enemys = new ArrayList<enemy>();
-        this.players = new ArrayList<player>();
+        this.enemys = new ArrayList<Enemy>();
+        this.players = new ArrayList<Player>();
         this.runEnemys = new ArrayList<Runnable>();
         this.runPlayers = new ArrayList<Runnable>();
         this.thEnemys = new ArrayList<Thread>();
@@ -61,73 +47,82 @@ public class playGround implements Serializable{
                 for(int i=0;i<sizeX;i++){
                     switch(line.charAt(i)){
                         case 'O':{
-                            this.players.add(new player("player",i,j, this, true));
+                            this.players.add(new Player("player",i,j, this, true));
                             this.runPlayers.add(this.players.get(this.players.size()-1));
                             this.thPlayers.add(new Thread(this.runPlayers.get(this.runPlayers.size()-1)));
-                            displayTab[i][j] = new object(' ');
+                            displayTab[i][j] = new Object(' ');
                             break;
                         }
                         case '$':{
-                            displayTab[i][j] = new gold(i,j);
+                            displayTab[i][j] = new Gold(i,j);
                             this.golds++;
                             int[] tmp = {i,j};
                             this.goldsPos.add(tmp);
                             break;
                         }
                         case 'X':{
-                            this.enemys.add(new enemy(i,j,true,this,true));
+                            this.enemys.add(new Enemy(i,j,true,this,true));
                             this.runEnemys.add(this.enemys.get(this.enemys.size()-1));
                             this.thEnemys.add(new Thread(this.runEnemys.get(this.runEnemys.size()-1)));
-                            displayTab[i][j] = new object(' ');
+                            displayTab[i][j] = new Object(' ');
                             break;
                         }
                         case 'H':{
-                            displayTab[i][j] = new ladder(i,j);
+                            displayTab[i][j] = new Ladder(i,j);
                             break;
                         }
                         case 'h':{
-                            displayTab[i][j] = new ladder(i,j,true);
+                            displayTab[i][j] = new Ladder(i,j,true);
                             int[] tmp = {i,j};
                             this.exitPos.add(tmp);
                             break;
                         }
                         case '#':{
-                            displayTab[i][j] = new floor(i,j);
+                            displayTab[i][j] = new Floor(i,j);
                             break;
                         }
                         case '_':{
-                            displayTab[i][j] = new zipline(i,j);
+                            displayTab[i][j] = new Zipline(i,j);
                             break;
                         }    
-                        default : {displayTab[i][j] = new object(line.charAt(i));}
+                        default : {displayTab[i][j] = new Object(line.charAt(i));}
                     }
                 }
                 j++;
             }
-            init();
-            for(int i=0;i<this.thPlayers.size();i++)
-                this.thPlayers.get(i).start();
-            for(int i=0;i<this.thEnemys.size();i++)
+            this.gamePlay.setFocusable(false);
+            this.gamePlay.setFont(new Font("Monospaced",Font.BOLD, 12));
+            this.info.setFocusable(false);
+            this.frame.setLayout(new FlowLayout());
+            this.frame.add(this.gamePlay);
+            this.frame.add(this.info);
+            this.frame.setVisible(true);
+                
+            for(int i=0;i<this.enemys.size();i++){
+                this.enemys.get(i).setTarget(this.players.get(i%this.players.size()));
                 this.thEnemys.get(i).start();
+            }
+            for(int i=0;i<this.thPlayers.size();i++){
+                this.frame.addKeyListener(this.players.get(i).getKeyListener());
+                this.thPlayers.get(i).start();
+            }
         }catch(Exception e){System.out.println(e);}
     }
     //standard mode multi
-    public playGround(FileReader f, int sizeX, int sizeY,int nbPlayer, int nbEnemy){
+    public PlayGround(FileReader f, int sizeX, int sizeY,int nbPlayer, int nbEnemy){
         int j=0;
         this.sizeX = sizeX;
         this.sizeY = sizeY;
-        this.displayTab = new object[sizeX][sizeY];
+        this.displayTab = new Object[sizeX][sizeY];
         this.exitPos = new ArrayList<int[]>();
         this.goldsPos = new ArrayList<int[]>();
-        this.enemys = new ArrayList<enemy>();
-        this.players = new ArrayList<player>();
+        this.enemys = new ArrayList<Enemy>();
+        this.players = new ArrayList<Player>();
         this.runEnemys = new ArrayList<Runnable>();
         this.runPlayers = new ArrayList<Runnable>();
         this.thEnemys = new ArrayList<Thread>();
         this.thPlayers = new ArrayList<Thread>();
-        this.gamePlay = new TextArea(sizeY, sizeX);
-        this.info = new TextArea(2,20);
-        this.frame.setSize(1000,800);
+        
         try{
             BufferedReader buf = new BufferedReader(f) ;
             String line;
@@ -137,18 +132,18 @@ public class playGround implements Serializable{
                         case 'O':{
                             System.out.println("players.size < nbPlayer => "+this.players.size()+" < "+nbPlayer);
                             if(this.players.size()<nbPlayer){
-                                this.players.add(new player("player",i,j, this,false));
+                                this.players.add(new Player("player",i,j, this,false));
                                 this.runPlayers.add(this.players.get(this.players.size()-1));
                                 this.thPlayers.add(new Thread(this.runPlayers.get(this.runPlayers.size()-1)));
-                                displayTab[i][j] = new object(' ');
+                                displayTab[i][j] = new Object(' ');
                             }
                             else{
-                                displayTab[i][j] = new object(' ');
+                                displayTab[i][j] = new Object(' ');
                             }
                             break;
                         }
                         case '$':{
-                            displayTab[i][j] = new gold(i,j);
+                            displayTab[i][j] = new Gold(i,j);
                             this.golds++;
                             int[] tmp = {i,j};
                             this.goldsPos.add(tmp);
@@ -157,57 +152,58 @@ public class playGround implements Serializable{
                         case 'X':{
                             System.out.println("enemys.size < nbEnemy => "+this.enemys.size()+" < "+nbEnemy);
                             if(this.enemys.size()<nbEnemy){
-                                this.enemys.add(new enemy(i,j,false,this,false));
+                                this.enemys.add(new Enemy(i,j,false,this,false));
                             }
                             else{
-                                this.enemys.add(new enemy(i,j,true,this,false));
+                                this.enemys.add(new Enemy(i,j,true,this,false));
                             }
                             this.runEnemys.add(this.enemys.get(this.enemys.size()-1));
                             this.thEnemys.add(new Thread(this.runEnemys.get(this.runEnemys.size()-1)));
-                            displayTab[i][j] = new object(' ');
+                            displayTab[i][j] = new Object(' ');
                             break;
                         }
                         case 'H':{
-                            displayTab[i][j] = new ladder(i,j);
+                            displayTab[i][j] = new Ladder(i,j);
                             break;
                         }
                         case 'h':{
-                            displayTab[i][j] = new ladder(i,j,true);
+                            displayTab[i][j] = new Ladder(i,j,true);
                             int[] tmp = {i,j};
                             this.exitPos.add(tmp);
                             break;
                         }
                         case '#':{
-                            displayTab[i][j] = new floor(i,j);
+                            displayTab[i][j] = new Floor(i,j);
                             break;
                         }
                         case '_':{
-                            displayTab[i][j] = new zipline(i,j);
+                            displayTab[i][j] = new Zipline(i,j);
                             break;
                         }    
-                        default : {displayTab[i][j] = new object(line.charAt(i));}
+                        default : {displayTab[i][j] = new Object(line.charAt(i));}
                     }
                 }
                 j++;
             }
-            init();
+            for(int i=0;i<this.thEnemys.size();i++){
+                this.enemys.get(i).setTarget(this.players.get(i%this.players.size()));
+                this.thEnemys.get(i).start();
+            }
             for(int i=0;i<this.thPlayers.size();i++)
                 this.thPlayers.get(i).start();
-            for(int i=0;i<this.thEnemys.size();i++)
-                this.thEnemys.get(i).start();
         }catch(Exception e){System.out.println(e);}
     }
     //methodes
     //
     //getteurs
-    public object[][]           getDisplayTab()    {return this.displayTab;}
+    public Object[][]           getDisplayTab()    {return this.displayTab;}
     public int                  getSizeX()         {return this.sizeX;}
     public int                  getSizeY()         {return this.sizeY;}
     public int                  getGolds()         {return this.golds;}
-    public player               getPlayer(int i)   {return this.players.get(i);}
-    public enemy                getEnemy(int i)    {return this.enemys.get(i);}
-    public ArrayList<player>    getPlayers()       {return this.players;}
-    public ArrayList<enemy>     getEnemys()        {return this.enemys;}
+    public Player               getPlayer(int i)   {return this.players.get(i);}
+    public Enemy                getEnemy(int i)    {return this.enemys.get(i);}
+    public ArrayList<Player>    getPlayers()       {return this.players;}
+    public ArrayList<Enemy>     getEnemys()        {return this.enemys;}
     public Runnable             getRunPlayer(int i){return this.runPlayers.get(i);}
     public Runnable             getRunEnemy(int i) {return this.runEnemys.get(i);}
     public ArrayList<Runnable>  getRunPlayers()    {return this.runPlayers;} 
@@ -244,11 +240,11 @@ public class playGround implements Serializable{
         }
     }
     
-    public void escapeFromHole(enemy e){
-        chronoToEscape cte = new chronoToEscape(e, 3500);
+    public void escapeFromHole(Enemy e){
+        ChronoToEscape cte = new ChronoToEscape(e, 3500);
         cte.start();
     }
-    public void updateHole(floor f){
+    public void updateHole(Floor f){
         for(int i=0;i<getPlayers().size();i++){
             if((getPlayer(i).getDigL() && (getPlayer(i).getX()==f.getX()+1 && getPlayer(i).getY()==f.getY()-1)) || (getPlayer(i).getDigR() && (getPlayer(i).getX()==f.getX()-1 && getPlayer(i).getY()==f.getY()-1))){
                 f.setHidden(true);
@@ -256,8 +252,8 @@ public class playGround implements Serializable{
             }
         }
     }
-    public void resealHole(floor f){
-        chronoToShow cts = new chronoToShow(f,8000);
+    public void resealHole(Floor f){
+        ChronoToShow cts = new ChronoToShow(f,8000);
         cts.start();
     }
     
@@ -313,31 +309,31 @@ public class playGround implements Serializable{
         }
         return res;
     }
-    class chrono extends Thread{
-        protected object o;
+    class Chrono extends Thread{
+        protected Object o;
         protected int  time;
-        public chrono(object o){
+        public Chrono(Object o){
             this.o = o;
             time = 4000;
         }
-        public chrono(object o, int t){
+        public Chrono(Object o, int t){
             this.o = o;
             this.time = t;
         }
-        public object getO(){return this.o;}
+        public Object getO(){return this.o;}
         public int getTime(){return this.time;}
 
-        public void setO(object o){this.o = o;}
+        public void setO(Object o){this.o = o;}
         public void setTime(int i){this.time = i;}
         @Override
         public void run(){};
         
     }
-    class chronoToShow extends chrono{
-        public chronoToShow(object o){
+    class ChronoToShow extends Chrono{
+        public ChronoToShow(Object o){
             super(o);
         }
-        public chronoToShow(object o, int t){
+        public ChronoToShow(Object o, int t){
             super(o,t);
         }
 
@@ -351,13 +347,13 @@ public class playGround implements Serializable{
             }
         }
     }
-    class chronoToEscape extends chrono{
-        enemy e;
-        public chronoToEscape(enemy e){
+    class ChronoToEscape extends Chrono{
+        Enemy e;
+        public ChronoToEscape(Enemy e){
             super(e);
             this.e = e;
         }
-        public chronoToEscape(enemy e, int t){
+        public ChronoToEscape(Enemy e, int t){
             super(e,t);
             this.e = e;
         }

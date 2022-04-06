@@ -1,14 +1,14 @@
 package objects;
 
 
-public class floor extends object {
-    public floor(){
+public class Floor extends Object {
+    public Floor(){
         super('#');
     }
-    public floor(int x, int y){
+    public Floor(int x, int y){
         super('#', x, y);
     }
-    public floor(int x, int y, boolean hide){
+    public Floor(int x, int y, boolean hide){
         super('#', x, y, hide);
     }
 }

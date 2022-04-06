@@ -1,34 +1,34 @@
 package objects;
 
-public class enemy extends character{
+public class Enemy extends Character{
     //attributs
     private Boolean bot;
-    private player target;
+    private Player target;
     //constructeurs
     //
     //par defaut
-    public enemy(playGround pg, boolean soloMode){
+    public Enemy(PlayGround pg, boolean soloMode){
         super('X',pg,soloMode);
         this.bot = true;
     }
     //standard 1
-    public enemy(int x, int y, playGround pg, boolean soloMode){
+    public Enemy(int x, int y, PlayGround pg, boolean soloMode){
         super('X', x, y, pg,soloMode);
         this.bot = true;
     }
     //standard 2
-    public enemy(int x, int y, boolean b, playGround pg, boolean soloMode){
+    public Enemy(int x, int y, boolean b, PlayGround pg, boolean soloMode){
         super('X', x, y, pg,soloMode);
         this.bot = b;
     }
     //standard 3
-    public enemy(int x, int y, player p, playGround pg, boolean soloMode){
+    public Enemy(int x, int y, Player p, PlayGround pg, boolean soloMode){
         super('X', x, y, pg,soloMode);
         this.bot = true;
         this.target = p;
     }
     //standard 4
-    public enemy(int x, int y, boolean b, player p, playGround pg, boolean soloMode){
+    public Enemy(int x, int y, boolean b, Player p, PlayGround pg, boolean soloMode){
         super('X', x, y, pg,soloMode);
         this.bot = b;
         this.target = p;
@@ -37,10 +37,10 @@ public class enemy extends character{
     //
     //getteurs
     public boolean isBot()    {return this.bot;}
-    public player  getTarget(){return this.target;}
+    public Player  getTarget(){return this.target;}
     //setteurs
     public void setIsBot(boolean b) {this.bot = b;}
-    public void setTarget(player p) {this.target = p;}
+    public void setTarget(Player p) {this.target = p;}
     //others
     public void die(){
         setInHole(false);

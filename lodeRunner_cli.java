@@ -7,37 +7,22 @@ import java.awt.*;
 import java.awt.event.*;
 
 
-public class lodeRunner_cli{
+public class LodeRunner_cli{
     //attributs
     protected static final int HEIGHT = 40;
     protected static final int WIDTH = 100;
     protected static final int PORT = 8080;
-    protected static InetAddress ADDR;
-    
+    protected static String ADDR;
+    protected static Socket clientSoc;
+    protected static BufferedReader sisr;
+    protected static PrintWriter sisw;
+
     public static boolean endGame = false;
-    private SendKeyListener skl;
+
+    private static SendKeyListener skl;
     private static Frame frame;
     private static TextArea gamePlay, info;
-    //constructeurs
-    //init
-    private void init(){
-        gamePlay.setFocusable(false);
-        gamePlay.setFont(new Font("Monospaced",Font.BOLD, 12));
-        info.setFocusable(false);
-        frame.setLayout(new FlowLayout());
-        frame.add(gamePlay);
-        frame.add(info);
-        frame.addKeyListener(skl);
-        frame.setVisible(true);
-        frame.setSize(1000, 800);
-    }
-    public lodeRunner_cli(){
-        try{this.skl = new SendKeyListener();}catch(Exception ex){System.out.println(ex + "class lodeRunner_cli method init");}
-        frame = new Frame("Lode Runner client");
-        gamePlay = new TextArea(HEIGHT, WIDTH);
-        info = new TextArea(2,20);
-        init();
-    }
+    
     //methodes
     //
     //getter
@@ -49,33 +34,33 @@ public class lodeRunner_cli{
     public static void setFrame(Frame f)       {frame = f;}
     public static void setGamePlay(TextArea g) {gamePlay = g;}
     public static void setInfo(TextArea i)     {info = i;}
-    //others
-    public static DatagramPacket getPacket(DatagramSocket socket, int i) throws IOException{
-        byte[] data = new byte[i];
-        DatagramPacket pkt = new DatagramPacket(data, data.length);
-        socket.receive(pkt);
-        return pkt;
-    }
-    public static void sendPacket(DatagramSocket socket, byte[] data, InetAddress addr, int port)throws IOException{
-        DatagramPacket packet = new DatagramPacket(data, data.length, addr, port);
-        socket.send(packet);
-    }
     //main
     public static void main(String Args[]){
-        new lodeRunner_cli();
+        //init
+        try{skl = new SendKeyListener();}catch(Exception ex){System.out.println(ex + "class lodeRunner_cli method init");}
+        frame = new Frame("Lode Runner client");
+        gamePlay = new TextArea(HEIGHT, WIDTH);
+        info = new TextArea(2,20);
+        gamePlay.setFocusable(false);
+        gamePlay.setFont(new Font("Monospaced",Font.BOLD, 12));
+        info.setFocusable(false);
+        frame.setLayout(new FlowLayout());
+        frame.add(gamePlay);
+        frame.add(info);
+        frame.addKeyListener(skl);
+        frame.setVisible(true);
+        frame.setSize(1000, 800);
+        //
         try{
             if(Args.length != 0){
-                ADDR = InetAddress.getByName(Args[0]);
+                ADDR = Args[0];
             }
             else{
-                ADDR = InetAddress.getByName("localhost");
+                ADDR = "localhost";
             }
-            DatagramPacket respPacket;
-            DatagramSocket clientSoc = new DatagramSocket();
-            sendPacket(clientSoc, Args[1].getBytes(), ADDR, PORT);
             if(Args[1].equals("solo")){
                 FileReader f = new FileReader("levels/solo/level1.txt");
-                playGround pg = new playGround(f,WIDTH,HEIGHT);
+                PlayGround pg = new PlayGround(f,WIDTH,HEIGHT);
                 while(pg.getThPlayer(0).isAlive()){///////!\\\\\ A MODIFIER !!!
                     pg.display();
                     try{Thread.sleep(1000/50);}catch(InterruptedException e){System.out.println(e);}//50 fps
@@ -83,25 +68,33 @@ public class lodeRunner_cli{
                 f.close();
             }
             else if(Args[1].equals("multi")){
-                //respPacket = getPacket(clientSoc, 65535);
-                sendPacket(clientSoc, "join".getBytes(), ADDR, PORT);
-                while(!endGame){///////!\\\\\ A MODIFIER !!!
-                    respPacket = getPacket(clientSoc, 65535);
-                    getGamePlay().setText(new String(respPacket.getData()));
-                    /*respPacket = getPacket(clientSoc, 65535);
-                    getInfo().setText(new String(respPacket.getData()));*/
-                    try{Thread.sleep(1000/50);}catch(InterruptedException e){System.out.println(e);}//50 fps
+                clientSoc = new Socket(ADDR, PORT);
+                sisr = new BufferedReader(new InputStreamReader(clientSoc.getInputStream()));
+                sisw = new PrintWriter(new BufferedWriter(new OutputStreamWriter(clientSoc.getOutputStream())), true);
+                String resp;
+                while(!(resp = sisr.readLine()).equals("START")){
+                    getGamePlay().setText(resp);
                 }
+                System.out.println("START");
+                sisw.println("GO");
+                String tmp;
+                while(!endGame){///////!\\\\\ A MODIFIER !!!
+                    resp="";
+                    while(!(tmp = sisr.readLine()).equals("END_LINE")){
+                        resp+=tmp+'\n';
+                    }
+                    getGamePlay().setText(resp);
+                    //try{Thread.sleep(1000/50);}catch(InterruptedException e){System.out.println(e);}//50 fps
+                }
+                sisr.close();
+                sisw.close();
+                clientSoc.close();
             }
         }catch(Exception e){System.out.println(e);}
     }
 
-
-    class SendKeyListener implements KeyListener{
-        private DatagramSocket clientSoc;
-        public SendKeyListener() throws Exception{
-            this.clientSoc = new DatagramSocket();
-        }
+    static class SendKeyListener implements KeyListener{
+        
         @Override
         public void keyTyped(KeyEvent e)
         {
@@ -110,28 +103,25 @@ public class lodeRunner_cli{
         @Override
         public void keyPressed(KeyEvent e)
         {
-            System.out.println("Key pressed = "+e.getKeyChar());
             try{
                 switch(e.getKeyChar()){
                     case 'a': {
-                        //dig('L');
-                        sendPacket(clientSoc, "DIG L".getBytes(), ADDR, PORT);
+                        sisw.println("DIG L");
                         try{Thread.sleep(30);}catch(InterruptedException i){System.out.println(i + " class MyKeyListener methods keypressed");}
                         keyReleased(e);
                         break;
                     }
                     case 'e': {
-                        // dig('R');
-                        sendPacket(clientSoc, "DIG R".getBytes(), ADDR, PORT);
+                        sisw.println("DIG R");
                         try{Thread.sleep(30);}catch(InterruptedException i){System.out.println(i + " class MyKeyListener methods keypressed");}
                         keyReleased(e);
                         break;
                     }
-                    case 'z': {/*setUp(true)*/sendPacket(clientSoc, "SET_UP TRUE".getBytes(), ADDR, PORT);break;}
-                    case 'q': {/*setLeft(true)*/sendPacket(clientSoc, "SET_LEFT TRUE".getBytes(), ADDR, PORT);break;}
-                    case 's': {/*setDown(true)*/sendPacket(clientSoc, "SET_DOWN TRUE".getBytes(), ADDR, PORT);break;}
-                    case 'd': {/*setRight(true)*/sendPacket(clientSoc, "SET_RIGHT TRUE".getBytes(), ADDR, PORT);break;}
-                    case 27 : {System.exit(0);break;}
+                    case 'z': {sisw.println("SET_UP TRUE");break;}
+                    case 'q': {sisw.println("SET_LEFT TRUE");break;}
+                    case 's': {sisw.println("SET_DOWN TRUE");break;}
+                    case 'd': {sisw.println("SET_RIGHT TRUE");break;}
+                    case 27 : {sisw.println("STOP");System.exit(0);endGame = true;break;}
                     
 
                 }
@@ -142,12 +132,12 @@ public class lodeRunner_cli{
         {
             try{
                 switch(e.getKeyChar()){
-                    case 'z': {/*setUp(false)*/sendPacket(clientSoc, "SET_UP FALSE".getBytes(), ADDR, PORT);break;}
-                    case 'q': {/*setLeft(false)*/sendPacket(clientSoc, "SET_LEFT FALSE".getBytes(), ADDR, PORT);break;}
-                    case 's': {/*setDown(false)*/sendPacket(clientSoc, "SET_DOWN FALSE".getBytes(), ADDR, PORT);break;}
-                    case 'd': {/*setRight(false)*/sendPacket(clientSoc, "SET_RIGHT FALSE".getBytes(), ADDR, PORT);break;}
-                    case 'a': {/*setDigL(false)*/sendPacket(clientSoc, "SET_DIG_L FALSE".getBytes(), ADDR, PORT);break;}
-                    case 'e': {/*setDigR(false)*/sendPacket(clientSoc, "SET_DIG_R FALSE".getBytes(), ADDR, PORT);break;}
+                    case 'z': {sisw.println("SET_UP FALSE");break;}
+                    case 'q': {sisw.println("SET_LEFT FALSE");break;}
+                    case 's': {sisw.println("SET_DOWN FALSE");break;}
+                    case 'd': {sisw.println("SET_RIGHT FALSE");break;}
+                    case 'a': {sisw.println("SET_DIG_L FALSE");break;}
+                    case 'e': {sisw.println("SET_DIG_R FALSE");break;}
                 }
             }catch(Exception ex){System.out.println(ex + "class SendkeyListener method keyreleased");}
         }

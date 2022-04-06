@@ -1,14 +1,14 @@
 package objects;
 
 
-public class zipline extends object{
-    public zipline(){
+public class Zipline extends Object{
+    public Zipline(){
         super('_');
     }
-    public zipline(int x, int y){
+    public Zipline(int x, int y){
         super('_', x, y);
     }
-    public zipline(int x, int y, boolean hide){
+    public Zipline(int x, int y, boolean hide){
         super('_', x, y, hide);
     }
 }
