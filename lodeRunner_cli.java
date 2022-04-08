@@ -80,7 +80,7 @@ public class LodeRunner_cli{
                 String tmp;
                 while(!endGame){///////!\\\\\ A MODIFIER !!!
                     resp="";
-                    while(!(tmp = sisr.readLine()).equals("END_LINE")){
+                    while(!(tmp = sisr.readLine()).equals("END_DISPLAY")){
                         resp+=tmp+'\n';
                     }
                     getGamePlay().setText(resp);

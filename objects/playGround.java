@@ -130,8 +130,8 @@ public class PlayGround implements Serializable{
                 for(int i=0;i<sizeX;i++){
                     switch(line.charAt(i)){
                         case 'O':{
-                            System.out.println("players.size < nbPlayer => "+this.players.size()+" < "+nbPlayer);
-                            if(this.players.size()<nbPlayer){
+                            //System.out.println("players.size < nbPlayer => "+this.players.size()+" < "+nbPlayer);
+                            if(this.players.size()<nbPlayer && nbPlayer>=1){
                                 this.players.add(new Player("player",i,j, this,false));
                                 this.runPlayers.add(this.players.get(this.players.size()-1));
                                 this.thPlayers.add(new Thread(this.runPlayers.get(this.runPlayers.size()-1)));
@@ -150,8 +150,8 @@ public class PlayGround implements Serializable{
                             break;
                         }
                         case 'X':{
-                            System.out.println("enemys.size < nbEnemy => "+this.enemys.size()+" < "+nbEnemy);
-                            if(this.enemys.size()<nbEnemy){
+                            //System.out.println("enemys.size < nbEnemy => "+this.enemys.size()+" < "+nbEnemy);
+                            if(this.enemys.size()<nbEnemy && nbEnemy>=1){
                                 this.enemys.add(new Enemy(i,j,false,this,false));
                             }
                             else{
