@@ -9,7 +9,7 @@ Lehnert William IE4-I911
     - LINUX   : ................
 
 2) pour lancer le client :
-    - WINDOWS : launcher_cli.bat [ip] [mode=(solo/multi)]
+    - WINDOWS : launcher_cli.bat [solo|multi] [ip]
     - LINUX   : ............................
 
 
