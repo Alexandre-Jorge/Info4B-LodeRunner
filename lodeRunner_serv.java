@@ -11,26 +11,36 @@ public class LodeRunner_serv{
             Lobby[] lobbys = new Lobby[MAX_LOBBY];
             System.out.println("Server started " + servSoc);
             while(nbLobby < MAX_LOBBY){
-                Lobby lobby = new Lobby(4, nbLobby);
-                lobbys[nbLobby] = lobby;
-                lobby.start();
-                long timeStart = System.currentTimeMillis();//!!!\\a modifier//!!\\
-                while(lobby.getNbEnemy()+lobby.getNbPlayer() < 4 && System.currentTimeMillis() - timeStart <10000){
-                    Socket client = servSoc.accept();
-                    if((lobby.getNbEnemy()+lobby.getNbPlayer())%2 == 1){
-                        lobby.addConnexion("enemy", client);
+                Socket client = servSoc.accept();
+                for(int i = 0; i < lobbys.length; i++){
+                    if(lobbys[i] != null){
+                        if(!lobbys[i].isAlive()){
+                            nbLobby--;
+                        }
+                    }
+                }
+                if(nbLobby < 1 || lobbys[nbLobby-1].getStart()){
+                    lobbys[nbLobby] = new Lobby(4, nbLobby);
+                    nbLobby++;
+                    lobbys[nbLobby-1].start();
+                }
+                if(lobbys[nbLobby-1].getNbEnemy()+lobbys[nbLobby-1].getNbPlayer() < 4){
+                    if((lobbys[nbLobby-1].getNbEnemy()+lobbys[nbLobby-1].getNbPlayer())%2 == 1){
+                        lobbys[nbLobby-1].addConnexion("enemy", client);
                         System.out.println("new enemy : IP = ["+client.getInetAddress()+"] PORT = "+client.getPort());
                     }
                     else{
-                        lobby.addConnexion("player", client);
+                        lobbys[nbLobby-1].addConnexion("player", client);
                         System.out.println("new player : IP = ["+client.getInetAddress()+"] PORT = "+client.getPort());
                     }
                 }
-                lobby.setStart(true);
-                nbLobby++;
+            }
+            for(int i = 0; i < lobbys.length; i++){
+                lobbys[i].join();
             }
             servSoc.close();
         }catch(Exception e){System.out.println(e);}
     }
+
 }
 

@@ -287,11 +287,11 @@ public class PlayGround implements Serializable{
             res+='\n';
         }
         getGamePlay().setText(res);
-        getInfo().setText("t");
         for(int i=0;i<getPlayers().size();i++){
-            getInfo().append("player : "+getPlayer(i)+"\n");
-            getInfo().append("Lives = "+getPlayer(i).getLives()+"\nGold = "+getPlayer(i).getGold()+"/"+getGolds()+"\n");
+            res = "player : "+getPlayer(i).getName()+"\n";
+            res += "Lives = "+getPlayer(i).getLives()+"\nGold = "+getPlayer(i).getGold()+"/"+getGolds()+"\n";
         }
+        getInfo().setText(res);
     }
     public String displayToSend(){
         res = "";
@@ -308,6 +308,27 @@ public class PlayGround implements Serializable{
             res+='\n';
         }
         return res;
+    }
+    public String infoToSend(Character c){
+        if(c.getType()=='O'){
+            if(c.getY()==1)return "YOU WIN !!";
+            else if(((Player)c).getLives()==0)return "GAME OVER";
+            else{
+                res = "player : "+((Player)c).getName()+"\n";
+                res+="Lives = "+((Player)c).getLives()+"\nGold = "+((Player)c).getGold()+"/"+getGolds()+"\n";
+                return res;
+            }
+        }
+        else if(c.getType()=='X'){
+            for(int i=0;i<getPlayers().size();i++){
+                if(getPlayer(i).getY()==1){return "GAME OVER";}
+                if(getPlayer(i).getLives()>0){
+                    return "";
+                }
+            }
+            return "YOU WIN !!";
+        }
+        return "";
     }
     class Chrono extends Thread{
         protected Object o;

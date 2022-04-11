@@ -14,7 +14,8 @@ public class Lobby extends Thread{
     private Connexion[] connexionCli;
     private PlayGround pg;
     private boolean start = false;
-    protected String out;
+    protected String out1,out2;
+    protected long startTime;
     //contructor
     //
     //standard
@@ -47,7 +48,11 @@ public class Lobby extends Thread{
 
     @Override
     public void run(){
+        startTime = System.currentTimeMillis();
         while(!getStart()){
+            if(getNbPlayer() + getNbEnemy() == 4 || System.currentTimeMillis() - startTime > 10000){//10s pour le debbugage mais a augmenter en realité
+                setStart(true);
+            }
             System.out.print("Matchmaking... "+(nbEnemy+nbPlayer)+"/"+connexionCli.length+"\r");
             try{Thread.sleep(100);}catch(InterruptedException e){System.out.println(e);}
         }
@@ -58,11 +63,23 @@ public class Lobby extends Thread{
             f.close();
         }catch(Exception e){System.out.println(e);}
         while(!endGame){
-            this.out = pg.displayToSend();
+            this.out1 = "GAMEPLAY\n"+pg.displayToSend();
             for(int i=0;i<connexionCli.length;i++){
                 if(connexionCli[i] != null){
-                    connexionCli[i].send(out);
+                    connexionCli[i].send(out1);
+                    if(connexionCli[i].getType().equals("player")){
+                        this.out2 = "INFO\n"+pg.infoToSend(pg.getPlayer(connexionCli[i].getID()));
+                    }
+                    if(connexionCli[i].getType().equals("enemy")){
+                        this.out2 = "INFO\n"+pg.infoToSend(pg.getEnemy(connexionCli[i].getID()));
+                    }
+                    connexionCli[i].send(out2);
                 }
+            }
+        }
+        for(int i=0;i<connexionCli.length;i++){
+            if(connexionCli[i] != null){
+                connexionCli[i].send("ENDGAME");
             }
         }
     }
@@ -90,14 +107,15 @@ public class Lobby extends Thread{
         //methods
         public void send(String s){
             sisw.println(s);
-            sisw.println("END_DISPLAY");
+            sisw.println("END");
         }
-        
+        public String getType(){return this.type;}
+        public int getID(){return this.id;}
         @Override
         public void run(){
             try{
                 while(!start){
-                    sisw.println("Matchmaking ..."+(getNbEnemy()+getNbPlayer())+"/"+getConnexionCli().length);
+                    sisw.println("Matchmaking ..."+(getNbEnemy()+getNbPlayer())+"/"+getConnexionCli().length + "\ttime left : "+(10-((System.currentTimeMillis()-startTime)/1000))+"s");
                     try{Thread.sleep(100);}catch(InterruptedException e){System.out.println(e);}
                 }
                 sisw.println("START");
@@ -105,7 +123,7 @@ public class Lobby extends Thread{
                 commands.start();
                 sleep(1000);
                 while(!stop){
-                    sleep(10);
+                    sleep(1000);
                 }
                 System.out.println("STOP");
                 sisr.close();
@@ -180,4 +198,3 @@ public class Lobby extends Thread{
         }
     }
 }
-

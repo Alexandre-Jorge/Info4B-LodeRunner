@@ -82,7 +82,6 @@ public class Player extends Character{
         }
         if(Y==1){
             setEnd(true);
-            getPlayGround().getInfo().setText("YOU WIN !");
             System.out.println(getName()+" won");
         }
     }

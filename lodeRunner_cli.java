@@ -79,11 +79,24 @@ public class LodeRunner_cli{
                 sisw.println("GO");
                 String tmp;
                 while(!endGame){///////!\\\\\ A MODIFIER !!!
-                    resp="";
-                    while(!(tmp = sisr.readLine()).equals("END_DISPLAY")){
-                        resp+=tmp+'\n';
+                    resp=sisr.readLine();
+                    if(resp.equals("GAMEPLAY")){
+                        resp="";
+                        while(!(tmp = sisr.readLine()).equals("END")){
+                            resp+=tmp+'\n';
+                        }
+                        getGamePlay().setText(resp);
                     }
-                    getGamePlay().setText(resp);
+                    else if(resp.equals("INFO")){
+                        resp="";
+                        while(!(tmp = sisr.readLine()).equals("END")){
+                            resp+=tmp+'\n';
+                        }
+                        getInfo().setText(resp);
+                    }
+                    else if(resp.equals("END_GAME")){
+                        endGame = true;
+                    }
                     //try{Thread.sleep(1000/50);}catch(InterruptedException e){System.out.println(e);}//50 fps
                 }
                 sisr.close();
