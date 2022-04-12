@@ -8,7 +8,6 @@ public class Lobby extends Thread{
     private final int HEIGHT = 40;
     private final int WIDTH = 100;
     private int numLobby;
-    private boolean endGame = false;
     private int nbPlayer = 0;
     private int nbEnemy = 0;
     private Connexion[] connexionCli;
@@ -62,7 +61,7 @@ public class Lobby extends Thread{
             this.pg = new PlayGround(f,WIDTH,HEIGHT,nbPlayer,nbEnemy);
             f.close();
         }catch(Exception e){System.out.println(e);}
-        while(!endGame){
+        while(!pg.isEndGame()){
             this.out1 = "GAMEPLAY\n"+pg.displayToSend();
             for(int i=0;i<connexionCli.length;i++){
                 if(connexionCli[i] != null){

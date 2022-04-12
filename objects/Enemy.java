@@ -96,7 +96,7 @@ public class Enemy extends Character{
             Control ctrl = new Control();
             ctrl.start();
         }
-        while(getPlayGround().getThPlayer(0).isAlive()){/////!\\\\ A MODIFIER !!!
+        while(!getPlayGround().isEndGame()){
             updateEnemy();
         }
     }
@@ -134,7 +134,7 @@ public class Enemy extends Character{
     class Control extends Thread{
         @Override
         public void run(){
-            while(this.isAlive()){
+            while(!getPlayGround().isEndGame()){
                 if(getLeft())goLeft();
                 else if(getRight())goRight();
                 else if(getUp())goUp();

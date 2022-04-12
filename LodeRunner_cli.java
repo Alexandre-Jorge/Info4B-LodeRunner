@@ -57,8 +57,8 @@ public class LodeRunner_cli{
                 //init
                 try{skl = new SendKeyListener();}catch(Exception ex){System.out.println(ex + "class lodeRunner_cli method init");}
                 frame = new Frame("Lode Runner client");
-                gamePlay = new TextArea(HEIGHT, WIDTH);
-                info = new TextArea(2,20);
+                gamePlay = new TextArea(HEIGHT+1, WIDTH+2);
+                info = new TextArea(4,20);
                 gamePlay.setFocusable(false);
                 gamePlay.setFont(new Font("Monospaced",Font.BOLD, 12));
                 info.setFocusable(false);
@@ -67,7 +67,7 @@ public class LodeRunner_cli{
                 frame.add(info);
                 frame.addKeyListener(skl);
                 frame.setVisible(true);
-                frame.setSize(1000, 800);
+                frame.setSize(900, 800);
                 //
 
                 clientSoc = new Socket(ADDR, PORT);
@@ -111,7 +111,7 @@ public class LodeRunner_cli{
     }
 
     static class SendKeyListener implements KeyListener{
-        
+        private boolean haveDigged = false;
         @Override
         public void keyTyped(KeyEvent e)
         {
@@ -123,15 +123,21 @@ public class LodeRunner_cli{
             try{
                 switch(e.getKeyChar()){
                     case 'a': {
-                        sisw.println("DIG L");
-                        try{Thread.sleep(30);}catch(InterruptedException i){System.out.println(i + " class MyKeyListener methods keypressed");}
-                        keyReleased(e);
+                        if(!haveDigged){
+                            sisw.println("DIG L");
+                            try{Thread.sleep(10);}catch(InterruptedException i){System.out.println(i + " class MyKeyListener methods keypressed");}
+                            sisw.println("SET_DIG_L FALSE");
+                            this.haveDigged = true;
+                        }
                         break;
                     }
                     case 'e': {
-                        sisw.println("DIG R");
-                        try{Thread.sleep(30);}catch(InterruptedException i){System.out.println(i + " class MyKeyListener methods keypressed");}
-                        keyReleased(e);
+                        if(!haveDigged){
+                            sisw.println("DIG R");
+                            try{Thread.sleep(10);}catch(InterruptedException i){System.out.println(i + " class MyKeyListener methods keypressed");}
+                            sisw.println("SET_DIG_R FALSE");
+                            this.haveDigged = true;
+                        }
                         break;
                     }
                     case 'z': {sisw.println("SET_UP TRUE");break;}
@@ -153,8 +159,16 @@ public class LodeRunner_cli{
                     case 'q': {sisw.println("SET_LEFT FALSE");break;}
                     case 's': {sisw.println("SET_DOWN FALSE");break;}
                     case 'd': {sisw.println("SET_RIGHT FALSE");break;}
-                    case 'a': {sisw.println("SET_DIG_L FALSE");break;}
-                    case 'e': {sisw.println("SET_DIG_R FALSE");break;}
+                    case 'a': {
+                        sisw.println("SET_DIG_L FALSE");
+                        this.haveDigged = false;
+                        break;
+                    }
+                    case 'e': {
+                        sisw.println("SET_DIG_R FALSE");
+                        this.haveDigged = false;
+                        break;
+                    }
                 }
             }catch(Exception ex){System.out.println(ex + "class SendkeyListener method keyreleased");}
         }

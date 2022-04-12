@@ -179,7 +179,7 @@ public class Character extends Object implements Runnable{
                         dig('L');
                         try{Thread.sleep(10);}catch(InterruptedException i){System.out.println(i + " class MyKeyListener methods keypressed");}
                         setDigL(false);
-                        haveDigged = true;
+                        this.haveDigged = true;
                     }
                     break;
                 }
@@ -188,7 +188,7 @@ public class Character extends Object implements Runnable{
                         dig('R');
                         try{Thread.sleep(10);}catch(InterruptedException i){System.out.println(i + " class MyKeyListener methods keypressed");}
                         setDigR(false);
-                        haveDigged = true;
+                        this.haveDigged = true;
                     }
                     break;
                 }
@@ -211,12 +211,12 @@ public class Character extends Object implements Runnable{
                 case 'd': {setRight(false);break;}
                 case 'a': {
                     setDigL(false);
-                    haveDigged = false;
+                    this.haveDigged = false;
                     break;
                 }
                 case 'e': {
                     setDigR(false);
-                    haveDigged = false;
+                    this.haveDigged = false;
                     break;
                 }
             }

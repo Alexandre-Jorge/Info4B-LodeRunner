@@ -2,7 +2,6 @@ todo list :
 
  - correction de bug y compris en local :
         - tombe meme si ennemy
-        - probleme affichage (selon resolution ecran)
         - enemy can move even the game ended
         - gestion de la fin de partie
 

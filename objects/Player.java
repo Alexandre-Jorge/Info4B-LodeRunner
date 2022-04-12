@@ -4,7 +4,7 @@ public class Player extends Character{
     //attributs
     private String name;
     private int nbGold, lives;
-    private boolean end = false;
+    //private boolean end = false;
     
     //constructeurs
     //
@@ -36,13 +36,13 @@ public class Player extends Character{
     public              String  getName()  {return this.name;}
     public              int     getGold()  {return this.nbGold;}
     public synchronized int     getLives() {return this.lives;}
-    public              boolean isEnded()  {return this.end;}
+    //public              boolean isEnded()  {return this.end;}
     
     //setteurs
     public              void setName(String s) {this.name = s;}
     public              void setGold(int i)    {this.nbGold = Math.abs(i);}
     public synchronized void setLives(int i)   {this.lives = Math.abs(i);}
-    public              void setEnd(boolean b) {this.end = b;}
+    //public              void setEnd(boolean b) {this.end = b;}
     //others
     public boolean isCaught(){
         for(int i=0;i<getPlayGround().getEnemys().size();i++){
@@ -81,8 +81,11 @@ public class Player extends Character{
             getPlayGround().resetPos();
         }
         if(Y==1){
-            setEnd(true);
+            getPlayGround().setEndGame(true);
             System.out.println(getName()+" won");
+        }
+        if(this.getLives()<=0){
+            getPlayGround().setEndGame(true);
         }
     }
     //run
@@ -90,23 +93,18 @@ public class Player extends Character{
     public void run(){
             Control ctrl = new Control();
             ctrl.start();
-        while(!isEnded()){
+        while(!getPlayGround().isEndGame()){
             updatePlayer();
         }
     }
     class Control extends Thread{
         @Override
         public void run(){
-            while(!isEnded()){
+            while(!getPlayGround().isEndGame()){
                 if(getLeft())goLeft();
                 else if(getRight())goRight();
                 else if(getUp())goUp();
                 else if(getDown())goDown();
-                if(getLives()<1){
-                    System.out.println("plus de vie !");
-                    setEnd(true);
-    
-                }
                 try{Thread.sleep(70);}catch(InterruptedException e){System.out.println(e);}
             }
         }

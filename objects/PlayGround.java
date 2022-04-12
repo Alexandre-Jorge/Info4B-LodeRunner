@@ -20,6 +20,7 @@ public class PlayGround implements Serializable{
     private TextArea gamePlay, info;
     private ArrayList<int[]> exitPos;
     private ArrayList<int[]> goldsPos;
+    private boolean endGame = false;
 
     protected boolean chronoForceStop = false;
 
@@ -198,29 +199,31 @@ public class PlayGround implements Serializable{
     //methodes
     //
     //getteurs
-    public Object[][]           getDisplayTab()    {return this.displayTab;}
-    public int                  getSizeX()         {return this.sizeX;}
-    public int                  getSizeY()         {return this.sizeY;}
-    public int                  getGolds()         {return this.golds;}
-    public Player               getPlayer(int i)   {return this.players.get(i);}
-    public Enemy                getEnemy(int i)    {return this.enemys.get(i);}
-    public ArrayList<Player>    getPlayers()       {return this.players;}
-    public ArrayList<Enemy>     getEnemys()        {return this.enemys;}
-    public Runnable             getRunPlayer(int i){return this.runPlayers.get(i);}
-    public Runnable             getRunEnemy(int i) {return this.runEnemys.get(i);}
-    public ArrayList<Runnable>  getRunPlayers()    {return this.runPlayers;} 
-    public ArrayList<Runnable>  getRunEnemys()     {return this.runEnemys;}
-    public Thread               getThPlayer(int i) {return this.thPlayers.get(i);}
-    public Thread               getThEnemy(int i)  {return this.thEnemys.get(i);}
-    public ArrayList<Thread>    getThPlayers()     {return this.thPlayers;}
-    public ArrayList<Thread>    getThEnemys()      {return this.thEnemys;}
-    public Frame                getFrame()         {return this.frame;}
-    public TextArea             getGamePlay()      {return this.gamePlay;}
-    public TextArea             getInfo()          {return this.info;}
-    public int[]                getGoldPos(int i)  {return this.goldsPos.get(i);}
-    public int[]                getExitPos(int i)  {return this.exitPos.get(i);}
-    public ArrayList<int[]>     getGoldsPos()      {return this.goldsPos;}
-    public ArrayList<int[]>     getExitPos()       {return this.exitPos;}
+    public Object[][]           getDisplayTab()      {return this.displayTab;}
+    public int                  getSizeX()           {return this.sizeX;}
+    public int                  getSizeY()           {return this.sizeY;}
+    public int                  getGolds()           {return this.golds;}
+    public Player               getPlayer(int i)     {return this.players.get(i);}
+    public Enemy                getEnemy(int i)      {return this.enemys.get(i);}
+    public ArrayList<Player>    getPlayers()         {return this.players;}
+    public ArrayList<Enemy>     getEnemys()          {return this.enemys;}
+    public Runnable             getRunPlayer(int i)  {return this.runPlayers.get(i);}
+    public Runnable             getRunEnemy(int i)   {return this.runEnemys.get(i);}
+    public ArrayList<Runnable>  getRunPlayers()      {return this.runPlayers;} 
+    public ArrayList<Runnable>  getRunEnemys()       {return this.runEnemys;}
+    public Thread               getThPlayer(int i)   {return this.thPlayers.get(i);}
+    public Thread               getThEnemy(int i)    {return this.thEnemys.get(i);}
+    public ArrayList<Thread>    getThPlayers()       {return this.thPlayers;}
+    public ArrayList<Thread>    getThEnemys()        {return this.thEnemys;}
+    public Frame                getFrame()           {return this.frame;}
+    public TextArea             getGamePlay()        {return this.gamePlay;}
+    public TextArea             getInfo()            {return this.info;}
+    public int[]                getGoldPos(int i)    {return this.goldsPos.get(i);}
+    public int[]                getExitPos(int i)    {return this.exitPos.get(i);}
+    public ArrayList<int[]>     getGoldsPos()        {return this.goldsPos;}
+    public ArrayList<int[]>     getExitPos()         {return this.exitPos;}
+    public boolean              isEndGame()          {return this.endGame;}
+    public void                 setEndGame(boolean b){this.endGame = b;}
 
     //others
     public void resetPos(){
