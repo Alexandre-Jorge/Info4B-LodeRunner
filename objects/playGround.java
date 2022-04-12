@@ -272,7 +272,6 @@ public class PlayGround implements Serializable{
     //toString
     String res = "";
     public void display(){
-        //if(getPlayer1().isEnded())return;
         res = "";
         for(int j=0;j<getSizeY();j++){
             for(int i=0;i<getSizeX();i++){
@@ -287,9 +286,16 @@ public class PlayGround implements Serializable{
             res+='\n';
         }
         getGamePlay().setText(res);
-        for(int i=0;i<getPlayers().size();i++){
-            res = "player : "+getPlayer(i).getName()+"\n";
-            res += "Lives = "+getPlayer(i).getLives()+"\nGold = "+getPlayer(i).getGold()+"/"+getGolds()+"\n";
+        res = "";
+        if(getPlayer(0).getY()==1){//mode solo donc getPlayer(0) suffit
+            res += "YOU WIN !!";
+        }
+        else if(getPlayer(0).getLives()==0){//mode solo donc getPlayer(0) suffit
+            res += "GAME OVER";
+        }
+        else{
+            res += "player : "+getPlayer(0).getName()+"\n";
+            res += "Lives = "+getPlayer(0).getLives()+"\nGold = "+getPlayer(0).getGold()+"/"+getGolds()+"\n";
         }
         getInfo().setText(res);
     }
@@ -333,19 +339,24 @@ public class PlayGround implements Serializable{
     class Chrono extends Thread{
         protected Object o;
         protected int  time;
+        protected boolean forceStop;
         public Chrono(Object o){
             this.o = o;
             time = 4000;
+            forceStop = false;
         }
         public Chrono(Object o, int t){
             this.o = o;
             this.time = t;
+            forceStop = false;
         }
         public Object getO(){return this.o;}
         public int getTime(){return this.time;}
+        public boolean getForceStop(){return this.forceStop;}
 
         public void setO(Object o){this.o = o;}
         public void setTime(int i){this.time = i;}
+        public void setForceStop(boolean b){this.forceStop = b;}
         @Override
         public void run(){};
         
@@ -360,7 +371,10 @@ public class PlayGround implements Serializable{
 
         @Override
         public void run(){
-            try{Thread.sleep(getTime());}catch(InterruptedException e){System.out.println(e + "class chronoToShow, methode run");}
+            long startTime = System.currentTimeMillis();
+            while(System.currentTimeMillis()-startTime<getTime() && !getForceStop()){
+                onSpinWait();
+            }
             this.o.setHidden(false);
             for(int i=0;i<getEnemys().size();i++){
                 if(getEnemy(i).getX()==o.getX() && getEnemy(i).getY()==o.getY())
@@ -381,7 +395,7 @@ public class PlayGround implements Serializable{
 
         @Override
         public void run(){
-            try{Thread.sleep(getTime());}catch(InterruptedException e){System.out.println(e + "class chronoToEscape, methode run");}
+            try{sleep(getTime());}catch(InterruptedException e){System.out.println(e + " class chronoToEscape, methode run");}
             if(e.getTarget().getX()<e.getX()){
                 e.setY(e.getY()-1);
                 e.setX(e.getX()-1);

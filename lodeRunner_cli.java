@@ -36,38 +36,40 @@ public class LodeRunner_cli{
     public static void setInfo(TextArea i)     {info = i;}
     //main
     public static void main(String Args[]){
-        //init
-        try{skl = new SendKeyListener();}catch(Exception ex){System.out.println(ex + "class lodeRunner_cli method init");}
-        frame = new Frame("Lode Runner client");
-        gamePlay = new TextArea(HEIGHT, WIDTH);
-        info = new TextArea(2,20);
-        gamePlay.setFocusable(false);
-        gamePlay.setFont(new Font("Monospaced",Font.BOLD, 12));
-        info.setFocusable(false);
-        frame.setLayout(new FlowLayout());
-        frame.add(gamePlay);
-        frame.add(info);
-        frame.addKeyListener(skl);
-        frame.setVisible(true);
-        frame.setSize(1000, 800);
-        //
+        
         try{
-            if(Args.length != 0){
-                ADDR = Args[0];
+            if(Args.length > 1){
+                ADDR = Args[1];
             }
             else{
                 ADDR = "localhost";
             }
-            if(Args[1].equals("solo")){
+            if(Args[0].equals("solo")){
                 FileReader f = new FileReader("levels/solo/level1.txt");
                 PlayGround pg = new PlayGround(f,WIDTH,HEIGHT);
                 while(pg.getThPlayer(0).isAlive()){///////!\\\\\ A MODIFIER !!!
                     pg.display();
-                    try{Thread.sleep(1000/50);}catch(InterruptedException e){System.out.println(e);}//50 fps
                 }
                 f.close();
             }
-            else if(Args[1].equals("multi")){
+            else if(Args[0].equals("multi")){
+
+                //init
+                try{skl = new SendKeyListener();}catch(Exception ex){System.out.println(ex + "class lodeRunner_cli method init");}
+                frame = new Frame("Lode Runner client");
+                gamePlay = new TextArea(HEIGHT, WIDTH);
+                info = new TextArea(2,20);
+                gamePlay.setFocusable(false);
+                gamePlay.setFont(new Font("Monospaced",Font.BOLD, 12));
+                info.setFocusable(false);
+                frame.setLayout(new FlowLayout());
+                frame.add(gamePlay);
+                frame.add(info);
+                frame.addKeyListener(skl);
+                frame.setVisible(true);
+                frame.setSize(1000, 800);
+                //
+
                 clientSoc = new Socket(ADDR, PORT);
                 sisr = new BufferedReader(new InputStreamReader(clientSoc.getInputStream()));
                 sisw = new PrintWriter(new BufferedWriter(new OutputStreamWriter(clientSoc.getOutputStream())), true);
@@ -97,11 +99,13 @@ public class LodeRunner_cli{
                     else if(resp.equals("END_GAME")){
                         endGame = true;
                     }
-                    //try{Thread.sleep(1000/50);}catch(InterruptedException e){System.out.println(e);}//50 fps
                 }
                 sisr.close();
                 sisw.close();
                 clientSoc.close();
+            }
+            else{
+                System.out.println("Usage : java LodeRunner_cli [solo|multi] [ip]");
             }
         }catch(Exception e){System.out.println(e);}
     }

@@ -4,7 +4,7 @@ import java.awt.event.*;
 
 public class Character extends Object implements Runnable{
     //attributs
-    private boolean onLadder, onFloor, onZipline, inHole, onTopOfLadder, diggableR, diggableL;
+    private boolean onLadder, onFloor, onZipline, inHole, onTopOfLadder, wallOnLeft, wallOnRight, diggableR, diggableL;
     protected MykeyListener keylistener;
     protected boolean left, right, up, down, digL, digR;
     private PlayGround pg;
@@ -40,6 +40,8 @@ public class Character extends Object implements Runnable{
     public synchronized boolean          isOnZipline()    {return this.onZipline;}
     public synchronized boolean          isInHole()       {return this.inHole;}
     public synchronized boolean          isOnTopOfLadder(){return this.onTopOfLadder;}
+    public synchronized boolean          isDiggableL()    {return this.diggableL;}
+    public synchronized boolean          isDiggableR()    {return this.diggableR;}
     public synchronized MykeyListener    getKeyListener() {return this.keylistener;}
     public synchronized boolean          getLeft()        {return this.left;}
     public synchronized boolean          getRight()       {return this.right;}
@@ -47,9 +49,9 @@ public class Character extends Object implements Runnable{
     public synchronized boolean          getDown()        {return this.down;}
     public synchronized boolean          getDigR()        {return this.digR;}
     public synchronized boolean          getDigL()        {return this.digL;}
-    public synchronized boolean          isDiggableL()    {return this.diggableL;}
-    public synchronized boolean          isDiggableR()    {return this.diggableR;}
     public synchronized PlayGround       getPlayGround()  {return this.pg;}
+    public synchronized boolean          getWallOnLeft()   {return this.wallOnLeft;}
+    public synchronized boolean          getWallOnRight()  {return this.wallOnRight;}
     //setteurs
     public synchronized void setOnLadder(boolean b)          {this.onLadder = b;}
     public synchronized void setOnFloor(boolean b)           {this.onFloor = b;}
@@ -65,6 +67,8 @@ public class Character extends Object implements Runnable{
     public synchronized void setDown(boolean b)              {this.down = b;}
     public synchronized void setLeft(boolean b)              {this.left = b;}
     public synchronized void setRight(boolean b)             {this.right = b;}
+    public synchronized void setWallOnLeft(boolean b)        {this.wallOnLeft = b;}
+    public synchronized void setWallOnRight(boolean b)       {this.wallOnRight = b;}
     //deplacements
     public void goInit() {setX(getInitX());setY(getInitY());}
     public boolean goUp(){
@@ -88,14 +92,14 @@ public class Character extends Object implements Runnable{
         return res;
     }
     public boolean goLeft(){
-        if((isOnLadder() || isOnFloor() || isOnZipline() || isOnTopOfLadder()) && getX()>0){
+        if((isOnLadder() || isOnFloor() || isOnZipline() || isOnTopOfLadder()) /*&& getX()>1*/ && !getWallOnLeft()){
             setX(getX()-1);
             return true;
         }
         else return false;
     }
     public boolean goRight(){
-        if((isOnLadder() || isOnFloor() || isOnZipline() || isOnTopOfLadder()) && getX()<99){
+        if((isOnLadder() || isOnFloor() || isOnZipline() || isOnTopOfLadder())/* && getX()<98*/ && !getWallOnRight()){
             setX(getX()+1);
             return true;
         }
@@ -130,11 +134,13 @@ public class Character extends Object implements Runnable{
     }
     public void updateCharacter(){
         char posC = getPlayGround().getDisplayTab()[getX()][getY()].getAvailableType();
+        char leftPosC = getPlayGround().getDisplayTab()[getX()-1][getY()].getAvailableType();
+        char rightPosC = getPlayGround().getDisplayTab()[getX()+1][getY()].getAvailableType();
         char UnderPosC;
         //deplacement
         if(getY()<39){
             UnderPosC = getPlayGround().getDisplayTab()[getX()][getY()+1].getAvailableType();
-            if(UnderPosC =='#'|| isOnEnemy()) setOnFloor(true);
+            if(isOnEnemy() || UnderPosC =='#') setOnFloor(true);
             else setOnFloor(false);
             if(posC==' ' && UnderPosC=='H') setOnTopOfLadder(true);
             else setOnTopOfLadder(false);
@@ -143,6 +149,10 @@ public class Character extends Object implements Runnable{
         else setOnLadder(false);
         if(posC=='_') setOnZipLine(true);
         else setOnZipLine(false);
+        if(leftPosC=='#') setWallOnLeft(true);
+        else setWallOnLeft(false);
+        if(rightPosC=='#') setWallOnRight(true);
+        else setWallOnRight(false);
         
         fall();
     }
