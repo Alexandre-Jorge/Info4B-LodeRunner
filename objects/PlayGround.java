@@ -39,9 +39,9 @@ public class PlayGround implements Serializable{
         this.runPlayers = new ArrayList<Runnable>();
         this.thEnemys = new ArrayList<Thread>();
         this.thPlayers = new ArrayList<Thread>();
-        this.gamePlay = new TextArea(sizeY, sizeX);
+        this.gamePlay = new TextArea(sizeY+1, sizeX+2);
         this.info = new TextArea(4,20);
-        this.frame.setSize(1000,1000);
+        this.frame.setSize(900,800);
         try{
             BufferedReader buf = new BufferedReader(f) ;
             String line;
