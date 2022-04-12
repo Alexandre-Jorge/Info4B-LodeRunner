@@ -47,7 +47,7 @@ public class LodeRunner_cli{
             if(Args[0].equals("solo")){
                 FileReader f = new FileReader("levels/solo/level1.txt");
                 PlayGround pg = new PlayGround(f,WIDTH,HEIGHT);
-                while(pg.getThPlayer(0).isAlive()){///////!\\\\\ A MODIFIER !!!
+                while(!pg.isEndGame()){
                     pg.display();
                 }
                 f.close();
@@ -80,7 +80,7 @@ public class LodeRunner_cli{
                 System.out.println("START");
                 sisw.println("GO");
                 String tmp;
-                while(!endGame){///////!\\\\\ A MODIFIER !!!
+                while(!endGame){
                     resp=sisr.readLine();
                     if(resp.equals("GAMEPLAY")){
                         resp="";
@@ -100,6 +100,7 @@ public class LodeRunner_cli{
                         endGame = true;
                     }
                 }
+                sisw.println("STOP");
                 sisr.close();
                 sisw.close();
                 clientSoc.close();

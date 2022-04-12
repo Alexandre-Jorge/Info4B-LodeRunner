@@ -4,6 +4,7 @@ import java.net.*;
 public class LodeRunner_serv{
     public static final int PORT = 8080;
     public static final int MAX_LOBBY = 4;
+    public static final int MAX_PLAYER = 6;
     public static void main(String Args[]){
         try{
             int nbLobby = 0;
@@ -20,11 +21,11 @@ public class LodeRunner_serv{
                     }
                 }
                 if(nbLobby < 1 || lobbys[nbLobby-1].getStart()){
-                    lobbys[nbLobby] = new Lobby(4, nbLobby);
+                    lobbys[nbLobby] = new Lobby(MAX_PLAYER, nbLobby);
                     nbLobby++;
                     lobbys[nbLobby-1].start();
                 }
-                if(lobbys[nbLobby-1].getNbEnemy()+lobbys[nbLobby-1].getNbPlayer() < 4){
+                if(lobbys[nbLobby-1].getNbEnemy()+lobbys[nbLobby-1].getNbPlayer() < MAX_PLAYER){
                     if((lobbys[nbLobby-1].getNbEnemy()+lobbys[nbLobby-1].getNbPlayer())%2 == 1){
                         lobbys[nbLobby-1].addConnexion("enemy", client);
                         System.out.println("new enemy : IP = ["+client.getInetAddress()+"] PORT = "+client.getPort());

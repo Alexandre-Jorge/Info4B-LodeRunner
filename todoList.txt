@@ -2,11 +2,7 @@ todo list :
 
  - correction de bug y compris en local :
         - tombe meme si ennemy
-        - enemy can move even the game ended
-        - gestion de la fin de partie
-
- - changer les zone marque //!!\\ A MODIFIER
 
  - gestion des pseudos
 
- - plusieurs levels
+ - ameliorer IA, recursivite avec comme cas de base (n = 0 || distance avec player = 0) et revoie la distance avec le player

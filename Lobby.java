@@ -49,7 +49,7 @@ public class Lobby extends Thread{
     public void run(){
         startTime = System.currentTimeMillis();
         while(!getStart()){
-            if(getNbPlayer() + getNbEnemy() == 4 || System.currentTimeMillis() - startTime > 10000){//10s pour le debbugage mais a augmenter en realité
+            if(getNbPlayer() + getNbEnemy() == connexionCli.length || System.currentTimeMillis() - startTime > 10000){//10s pour le debbugage mais a augmenter en realité
                 setStart(true);
             }
             System.out.print("Matchmaking... "+(nbEnemy+nbPlayer)+"/"+connexionCli.length+"\r");
@@ -78,7 +78,7 @@ public class Lobby extends Thread{
         }
         for(int i=0;i<connexionCli.length;i++){
             if(connexionCli[i] != null){
-                connexionCli[i].send("ENDGAME");
+                connexionCli[i].send("END_GAME");
             }
         }
     }
