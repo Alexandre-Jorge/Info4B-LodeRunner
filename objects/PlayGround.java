@@ -21,6 +21,8 @@ public class PlayGround implements Serializable{
     private ArrayList<int[]> exitPos;
     private ArrayList<int[]> goldsPos;
 
+    protected boolean chronoForceStop = false;
+
     //constructeurs
     //
     //standard mode solo
@@ -38,8 +40,8 @@ public class PlayGround implements Serializable{
         this.thEnemys = new ArrayList<Thread>();
         this.thPlayers = new ArrayList<Thread>();
         this.gamePlay = new TextArea(sizeY, sizeX);
-        this.info = new TextArea(2,20);
-        this.frame.setSize(1000,800);
+        this.info = new TextArea(4,20);
+        this.frame.setSize(1000,1000);
         try{
             BufferedReader buf = new BufferedReader(f) ;
             String line;
@@ -232,6 +234,7 @@ public class PlayGround implements Serializable{
             getDisplayTab()[getGoldPos(i)[0]][getGoldPos(i)[1]].setHidden(false);
         }
         showExit(false);
+        this.chronoForceStop = true;
     }
     
     public void showExit(boolean b){
@@ -254,6 +257,7 @@ public class PlayGround implements Serializable{
     }
     public void resealHole(Floor f){
         ChronoToShow cts = new ChronoToShow(f,8000);
+        this.chronoForceStop = false;
         cts.start();
     }
     
@@ -339,24 +343,19 @@ public class PlayGround implements Serializable{
     class Chrono extends Thread{
         protected Object o;
         protected int  time;
-        protected boolean forceStop;
         public Chrono(Object o){
             this.o = o;
             time = 4000;
-            forceStop = false;
         }
         public Chrono(Object o, int t){
             this.o = o;
             this.time = t;
-            forceStop = false;
         }
         public Object getO(){return this.o;}
         public int getTime(){return this.time;}
-        public boolean getForceStop(){return this.forceStop;}
 
         public void setO(Object o){this.o = o;}
         public void setTime(int i){this.time = i;}
-        public void setForceStop(boolean b){this.forceStop = b;}
         @Override
         public void run(){};
         
@@ -372,7 +371,7 @@ public class PlayGround implements Serializable{
         @Override
         public void run(){
             long startTime = System.currentTimeMillis();
-            while(System.currentTimeMillis()-startTime<getTime() && !getForceStop()){
+            while(System.currentTimeMillis()-startTime<getTime() && !chronoForceStop){
                 onSpinWait();
             }
             this.o.setHidden(false);

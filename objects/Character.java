@@ -164,6 +164,7 @@ public class Character extends Object implements Runnable{
     }
 
     class MykeyListener implements KeyListener{
+        private boolean haveDigged = false;
         @Override
         public void keyTyped(KeyEvent e)
         {
@@ -174,15 +175,21 @@ public class Character extends Object implements Runnable{
         {
             switch(e.getKeyChar()){
                 case 'a': {
-                    dig('L');
-                    try{Thread.sleep(30);}catch(InterruptedException i){System.out.println(i + " class MyKeyListener methods keypressed");}
-                    keyReleased(e);
+                    if(!haveDigged){
+                        dig('L');
+                        try{Thread.sleep(10);}catch(InterruptedException i){System.out.println(i + " class MyKeyListener methods keypressed");}
+                        setDigL(false);
+                        haveDigged = true;
+                    }
                     break;
                 }
                 case 'e': {
-                    dig('R');
-                    try{Thread.sleep(30);}catch(InterruptedException i){System.out.println(i + " class MyKeyListener methods keypressed");}
-                    keyReleased(e);
+                    if(!haveDigged){
+                        dig('R');
+                        try{Thread.sleep(10);}catch(InterruptedException i){System.out.println(i + " class MyKeyListener methods keypressed");}
+                        setDigR(false);
+                        haveDigged = true;
+                    }
                     break;
                 }
                 case 'z': {setUp(true);break;}
@@ -202,8 +209,16 @@ public class Character extends Object implements Runnable{
                 case 'q': {setLeft(false);break;}
                 case 's': {setDown(false);break;}
                 case 'd': {setRight(false);break;}
-                case 'a': {setDigL(false);break;}
-                case 'e': {setDigR(false);break;}
+                case 'a': {
+                    setDigL(false);
+                    haveDigged = false;
+                    break;
+                }
+                case 'e': {
+                    setDigR(false);
+                    haveDigged = false;
+                    break;
+                }
             }
         }
     }

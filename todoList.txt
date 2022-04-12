@@ -1,10 +1,10 @@
 todo list :
 
- - correction de bug y compris en local (collision, tombe meme si ennemy)
-        - reseal hole quand init
+ - correction de bug y compris en local :
+        - tombe meme si ennemy
         - probleme affichage (selon resolution ecran)
-        - player qui meurt si il va a gauche ou droite et qu'il y a un floor
-        
+        - enemy can move even the game ended
+        - gestion de la fin de partie
 
  - changer les zone marque //!!\\ A MODIFIER
 
