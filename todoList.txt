@@ -1,9 +1,0 @@
-todo list :
-
- - correction de bug y compris en local :
-        - tombe meme si ennemy
-
- - gestion des pseudos
-
- - ameliorer IA :
-       - rajouter les condition (voir ligne 84 Enemy)
