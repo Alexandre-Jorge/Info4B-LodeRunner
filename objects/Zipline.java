@@ -1,6 +1,6 @@
 package objects;
 
-
+//objet représentant les tyrolennes
 public class Zipline extends Object{
     public Zipline(){
         super('_');

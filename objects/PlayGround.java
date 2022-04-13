@@ -64,7 +64,7 @@ public class PlayGround implements Serializable{
                             break;
                         }
                         case 'X':{
-                            this.enemys.add(new Enemy(i,j,true,this,true));
+                            this.enemys.add(new Enemy(i,j,this,false));
                             this.runEnemys.add(this.enemys.get(this.enemys.size()-1));
                             this.thEnemys.add(new Thread(this.runEnemys.get(this.runEnemys.size()-1)));
                             displayTab[i][j] = new Object(' ');
@@ -135,7 +135,7 @@ public class PlayGround implements Serializable{
                         case 'O':{
                             //System.out.println("players.size < nbPlayer => "+this.players.size()+" < "+nbPlayer);
                             if(this.players.size()<nbPlayer && nbPlayer>=1){
-                                this.players.add(new Player("player",i,j, this,false));
+                                this.players.add(new Player("player",i,j, this,true));
                                 this.runPlayers.add(this.players.get(this.players.size()-1));
                                 this.thPlayers.add(new Thread(this.runPlayers.get(this.runPlayers.size()-1)));
                                 displayTab[i][j] = new Object(' ');
@@ -155,10 +155,10 @@ public class PlayGround implements Serializable{
                         case 'X':{
                             //System.out.println("enemys.size < nbEnemy => "+this.enemys.size()+" < "+nbEnemy);
                             if(this.enemys.size()<nbEnemy && nbEnemy>=1){
-                                this.enemys.add(new Enemy(i,j,false,this,false));
+                                this.enemys.add(new Enemy(i,j,this,true));
                             }
                             else{
-                                this.enemys.add(new Enemy(i,j,true,this,false));
+                                this.enemys.add(new Enemy(i,j,this,false));
                             }
                             this.runEnemys.add(this.enemys.get(this.enemys.size()-1));
                             this.thEnemys.add(new Thread(this.runEnemys.get(this.runEnemys.size()-1)));

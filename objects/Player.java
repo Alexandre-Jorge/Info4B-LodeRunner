@@ -2,9 +2,8 @@ package objects;
 
 public class Player extends Character{
     //attributs
-    private String name;
-    private int nbGold, lives;
-    //private boolean end = false;
+    private String name;//nom du joueur
+    private int nbGold, lives;//nombre d'or et de vie
     
     //constructeurs
     //
@@ -13,20 +12,21 @@ public class Player extends Character{
         this.nbGold    = 0;
         this.lives     = 5;
     }
-    //par defaut
-    public Player(PlayGround pg, boolean soloMode){
-        super('O', pg,soloMode);
+    //stadard 1
+    public Player(PlayGround pg, boolean human){
+        super('O', pg, human);
         init();
+        this.name = "Player";
     }
-    //standard 1
-    public Player(String name, PlayGround pg, boolean soloMode){
-        super('O', pg,soloMode);
+    //standard 2
+    public Player(String name, PlayGround pg, boolean human){
+        super('O', pg, human);
         init();
         this.name = name;
     }
-    //standard 2
-    public Player(String name, int posX, int posY, PlayGround pg, boolean soloMode){
-        super('O',posX,posY, pg,soloMode);
+    //standard 3
+    public Player(String name, int posX, int posY, PlayGround pg, boolean human){
+        super('O',posX,posY, pg, human);
         init();
         this.name = name;
     }
@@ -36,21 +36,20 @@ public class Player extends Character{
     public              String  getName()  {return this.name;}
     public              int     getGold()  {return this.nbGold;}
     public synchronized int     getLives() {return this.lives;}
-    //public              boolean isEnded()  {return this.end;}
     
     //setteurs
     public              void setName(String s) {this.name = s;}
     public              void setGold(int i)    {this.nbGold = Math.abs(i);}
     public synchronized void setLives(int i)   {this.lives = Math.abs(i);}
-    //public              void setEnd(boolean b) {this.end = b;}
     //others
-    public boolean isCaught(){
-        for(int i=0;i<getPlayGround().getEnemys().size();i++){
-            if(getX()==getPlayGround().getEnemy(i).getX() && getY()==getPlayGround().getEnemy(i).getY())return true;
+
+    public boolean isCaught(){//verifie si le joueur est attrapé par un enemi
+        for(int i=0;i<getPlayGround().getEnemys().size();i++){//parcours de la liste des enemis
+            if(getX()==getPlayGround().getEnemy(i).getX() && getY()==getPlayGround().getEnemy(i).getY())return true;//si le joueur est sur la meme position que l'enemi retourne vrai
         }
-        return false;
+        return false;//sinon retourne faux
     }
-    public void updatePlayer(){
+    public void updatePlayer(){//met a jour les attributs du joueur
         updateCharacter();
         int X = getX();
         int Y = getY();
@@ -95,18 +94,6 @@ public class Player extends Character{
             ctrl.start();
         while(!getPlayGround().isEndGame()){
             updatePlayer();
-        }
-    }
-    class Control extends Thread{
-        @Override
-        public void run(){
-            while(!getPlayGround().isEndGame()){
-                if(getLeft())goLeft();
-                else if(getRight())goRight();
-                else if(getUp())goUp();
-                else if(getDown())goDown();
-                try{Thread.sleep(70);}catch(InterruptedException e){System.out.println(e);}
-            }
         }
     }
     

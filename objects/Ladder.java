@@ -1,6 +1,6 @@
 package objects;
 
-
+//objet représentant les echelles
 public class Ladder extends Object {
     public Ladder(){
         super('H');

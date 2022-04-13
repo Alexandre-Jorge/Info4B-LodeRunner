@@ -1,7 +1,6 @@
 package objects;
 
-
-
+//objet représentant les pieces ou tresors a ramasser
 public class Gold extends Object {
     public Gold(){
         super('$');
