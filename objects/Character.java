@@ -92,14 +92,14 @@ public class Character extends Object implements Runnable{
         return res;
     }
     public boolean goLeft(){
-        if((isOnLadder() || isOnFloor() || isOnZipline() || isOnTopOfLadder()) /*&& getX()>1*/ && !getWallOnLeft()){
+        if((isOnLadder() || isOnFloor() || isOnZipline() || isOnTopOfLadder()) && !getWallOnLeft()){
             setX(getX()-1);
             return true;
         }
         else return false;
     }
     public boolean goRight(){
-        if((isOnLadder() || isOnFloor() || isOnZipline() || isOnTopOfLadder())/* && getX()<98*/ && !getWallOnRight()){
+        if((isOnLadder() || isOnFloor() || isOnZipline() || isOnTopOfLadder()) && !getWallOnRight()){
             setX(getX()+1);
             return true;
         }
@@ -132,6 +132,12 @@ public class Character extends Object implements Runnable{
         }
         return false;
     }
+    public boolean isOnEnemy(int pos[]){
+        for(int i=0;i<getPlayGround().getEnemys().size();i++){
+            if(pos[0]==getPlayGround().getEnemy(i).getX() && pos[1]==getPlayGround().getEnemy(i).getY()-1) return true;
+        }
+        return false;
+    }
     public void updateCharacter(){
         char posC = getPlayGround().getDisplayTab()[getX()][getY()].getAvailableType();
         char leftPosC = getPlayGround().getDisplayTab()[getX()-1][getY()].getAvailableType();
@@ -155,6 +161,30 @@ public class Character extends Object implements Runnable{
         else setWallOnRight(false);
         
         fall();
+    }
+    public boolean[] updateCharacter(int pos[]){
+        char posC = getPlayGround().getDisplayTab()[pos[0]][pos[1]].getAvailableType();
+        char leftPosC = getPlayGround().getDisplayTab()[pos[0]-1][pos[1]].getAvailableType();
+        char rightPosC = getPlayGround().getDisplayTab()[pos[0]+1][pos[1]].getAvailableType();
+        char UnderPosC;
+        boolean[] out = new boolean[6];
+        //deplacement
+        if(getY()<39){
+            UnderPosC = getPlayGround().getDisplayTab()[pos[0]][pos[1]+1].getAvailableType();
+            if(isOnEnemy(pos) || UnderPosC =='#') out[0] = true;
+            else out[0] = false;
+            if(posC==' ' && UnderPosC=='H') out[1] = true;
+            else out[1] = false;
+        }
+        if(posC=='H') out[2] = true;
+        else out[2] = false;
+        if(posC=='_') out[3] = true;
+        else out[3] = false;
+        if(leftPosC=='#') out[4] = true;
+        else out[4] = false;
+        if(rightPosC=='#') out[5] = true;
+        else out[5] = false;
+        return out;
     }
 
     //run

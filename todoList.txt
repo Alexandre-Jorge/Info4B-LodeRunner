@@ -5,4 +5,5 @@ todo list :
 
  - gestion des pseudos
 
- - ameliorer IA, recursivite avec comme cas de base (n = 0 || distance avec player = 0) et revoie la distance avec le player
+ - ameliorer IA :
+       - rajouter les condition (voir ligne 84 Enemy)
