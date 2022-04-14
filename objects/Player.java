@@ -42,7 +42,10 @@ public class Player extends Character{
     public              void setGold(int i)    {this.nbGold = Math.abs(i);}
     public synchronized void setLives(int i)   {this.lives = Math.abs(i);}
     //others
-
+    public void die(){//fait mourir le joueur
+        setLives(getLives()-1);//on enleve une vie au joueur
+        getPlayGround().resetPos();//on remet la postion initiale du jeux
+    }
     public boolean isCaught(){//verifie si le joueur est attrapé par un enemi
         for(int i=0;i<getPlayGround().getEnemys().size();i++){//parcours de la liste des enemis
             if(getX()==getPlayGround().getEnemy(i).getX() && getY()==getPlayGround().getEnemy(i).getY())return true;//si le joueur est sur la meme position que l'enemi retourne vrai
@@ -76,9 +79,8 @@ public class Player extends Character{
                 getPlayGround().showExit(true);//on affiche la sortie
             }
         }
-        else if( isCaught() || getPlayGround().getDisplayTab()[X][Y].getAvailableType()=='#'){//si le joueur est attrapé ou que le trou dans lequel il etait s'est rebouché
-            setLives(getLives()-1);//on enleve une vie au joueur
-            getPlayGround().resetPos();//on remet la postion initiale du jeux
+        else if( isCaught()){//si le joueur est attrapé
+            die();//on fait mourir le joueur
         }
         if(Y==1){//si le joueur atteint le sommet de la map
             getPlayGround().setEndGame(true);//on dit que le jeux est fini

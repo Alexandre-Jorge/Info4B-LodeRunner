@@ -386,6 +386,10 @@ public class PlayGround implements Serializable{
                 if(getEnemy(i).getX()==o.getX() && getEnemy(i).getY()==o.getY())//si un enemi est sur le même endroit que l'objet
                     getEnemy(i).die();//on le tue
             }
+            for(int i=0;i<getPlayers().size();i++){//on parcourt la liste des joueurs
+                if(getPlayer(i).getX()==o.getX() && getPlayer(i).getY()==o.getY())//si un joueur est sur le même endroit que l'objet
+                    getPlayer(i).die();//on le tue
+            }
         }
     }
     class ChronoToEscape extends Chrono{//chrono qui va faire s'échapper un enemi d'un trou une fois terminé
