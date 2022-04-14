@@ -107,32 +107,6 @@ public class Enemy extends Character{
         }
         @Override
         public void run(){
-            /*boolean moved;
-            while(getTarget().getLives()>0){
-                try{Thread.sleep(100);}catch(InterruptedException e){System.out.println(e);}
-                moved = false;
-                if(!isInHole()){
-                    if (isOnFloor() || isOnTopOfLadder()){
-                        if(isOnLadder()){
-                            if (getY()<getTarget().getY()) {moved = goDown();}
-                            else if (getY()>getTarget().getY()){moved = goUp();}
-                        }
-                        if((isOnFloor() || isOnTopOfLadder()) && !moved){
-                            if(getX()<getTarget().getX()) {moved = goRight();}
-                            else if (getX()>getTarget().getX()){moved = goLeft();}
-                        }
-                    }
-                    if((isOnLadder() || isOnTopOfLadder())&& !moved){
-                        if (getY()<getTarget().getY()) {moved = goDown();}
-                        else if (getY()>getTarget().getY()){moved = goUp();}
-                    }
-                    if(isOnZipline() && !moved){
-                        if(getX()<getTarget().getX()) {moved = goRight();}
-                        else if (getX()>getTarget().getX()){moved = goLeft();}
-                        else if(getY()<getTarget().getY()){moved = goDown();}
-                    }
-                }
-            }*/
             boolean moved;//booleen qui indique qu'un mouvement a deja ete effectue ou non
             while(!getPlayGround().isEndGame()){//tant que le jeu n'est pas fini
                 try{Thread.sleep(100);}catch(InterruptedException e){System.out.println(e);}//on attend 100ms, definie la vitesse de l'IA (inferieur à celle d'un Player)
