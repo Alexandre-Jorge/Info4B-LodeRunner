@@ -13,7 +13,7 @@ public class Lobby extends Thread{
     private Connexion[] connexionCli;//tableau ou se trouvent les clients
     private PlayGround pg;//terrain de jeu
     private boolean start = false;//booleen qui permet de savoir si la partie est lancée
-    protected String out;//string qui contient les données à envoyer aux clients
+    protected String out1, out2;//string qui contienent les données à envoyer aux clients
     protected long startTime;//moment ou le lobby a demarrer
     //contructor
     //
@@ -62,17 +62,17 @@ public class Lobby extends Thread{
             f.close();//ferme le fichier
         }catch(Exception e){System.out.println(e);}
         while(!pg.isEndGame()){//tant que la partie n'est pas finie
-            this.out = "GAMEPLAY\n"+pg.displayToSend();//la premiere string a envoyer aux clients est le terrain de jeu
+            this.out1 = "GAMEPLAY\n"+pg.displayToSend();//la premiere string a envoyer aux clients est le terrain de jeu
             for(int i=0;i<connexionCli.length;i++){//pour chaque client
                 if(connexionCli[i] != null){//si le client existe bien
-                    connexionCli[i].send(out);//on lui envoie le terrain de jeu
+                    connexionCli[i].send(out1);//on lui envoie le terrain de jeu
                     if(connexionCli[i].getType().equals("player")){//si c'est un player
-                        this.out = "INFO\n"+pg.infoToSend(pg.getPlayer(connexionCli[i].getID()));//on lui envoie les informations du player
+                        this.out2 = "INFO\n"+pg.infoToSend(pg.getPlayer(connexionCli[i].getID()));//on lui envoie les informations du player
                     }
                     else{//si c'est un ennemi
-                        this.out = "INFO\n"+pg.infoToSend(pg.getEnemy(connexionCli[i].getID()));//on lui envoie les informations de l'ennemi
+                        this.out2 = "INFO\n"+pg.infoToSend(pg.getEnemy(connexionCli[i].getID()));//on lui envoie les informations de l'ennemi
                     }
-                    connexionCli[i].send(out);//on lui envoie les informations
+                    connexionCli[i].send(out2);//on lui envoie les informations
                 }
             }
         }
